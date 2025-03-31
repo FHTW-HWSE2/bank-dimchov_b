@@ -1,0 +1,1 @@
+/usr/bin/cc -Wl,--dependency-file=CMakeFiles/bank.dir/link.d CMakeFiles/bank.dir/src/main.c.o CMakeFiles/bank.dir/src/account.c.o CMakeFiles/bank.dir/src/transaction.c.o CMakeFiles/bank.dir/src/user.c.o -o bank
