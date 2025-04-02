@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/opt/bank-dimchov_b/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

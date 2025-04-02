@@ -10,3 +10,6 @@ add_executable(bank src/main.c src/account.c src/transaction.c src/user.c)
 
 # Include header files
 target_include_directories(bank PRIVATE include)
+
+# Compiler Flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror -Wno-unused-parameter")
