@@ -1,3 +1,0 @@
-/opt/bank-dimchov_b/build/CMakeFiles/bank.dir
-/opt/bank-dimchov_b/build/CMakeFiles/edit_cache.dir
-/opt/bank-dimchov_b/build/CMakeFiles/rebuild_cache.dir
