@@ -1,9 +1,10 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
+#include "customer.h"
+
 double deposit();
-void report(double balance);
-double withdraw(double balance);
-double transfer(double balance);
+double withdraw(User *user);
+double transfer(User *user);
 
 #endif 

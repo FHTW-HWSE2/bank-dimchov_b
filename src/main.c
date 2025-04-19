@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 #include "../include/transaction.h"
-// #include "../include/account.h"
+#include "../include/customer.h"
+#include "../include/account.h"
 
 void print_help() {
     printf("\n*** WELCOME TO THE BANK ***");
@@ -8,46 +11,62 @@ void print_help() {
     printf("\n 1.   Create an account");
     printf("\n 2.   Delete account");
     printf("\n 3.   Deposit money");
-    printf("\n 4.   Withdraw moeny");
+    printf("\n 4.   Withdraw money");
     printf("\n 5.   Transfer money");
-    printf("\n 6.   Check balance");
+    printf("\n 6.   Report");
     printf("\n 7.   Exit");
 }
 
 int main(int argc, char *argv[]) {
-
     int choice = 0; 
-    double balance = 0;
+    User user;
+
+    srand(time(NULL));
 
 do {
     print_help();
     printf("\nEnter your choice: ");
     scanf("%d", &choice);
+    printf("\n");
 
     switch(choice){
-    /*  case 1:
-            create_account();
+        case 1:
+            create_account(&user);
             break;
         case 2:
-            delete_account();
-            break; */
+            if (login(&user)) {
+                delete_account(&user);
+            }
+            break; 
         case 3:
-            balance += deposit();
+            if (login(&user)) {
+                double amount = deposit();
+                update_balance_in_csv(&user, amount);
+                check_customer_balance(&user);
+            }
             break;
         case 4:
-            balance -= withdraw(balance);
+            if (login(&user)) {
+                double amount = withdraw(&user);
+                update_balance_in_csv(&user, amount);
+                check_customer_balance(&user);
+            }
             break;
     /*  case 5:
-            transfer(balance);
+            if (login(&user)) {
+                double amount = transfer(&user);
+                update_balance_in_csv(&user, amount);
+                check_customer_balance(&user);
+            }
             break; */
         case 6:
-            report(balance);
+            report(&user);
             break;
         case 7: 
-            printf("\nExiting... See you later!\n");
+            printf("Exiting... See you later!\n");
             break;
         default:
-            printf("\nInvalid choice! Please select 1-7\n");
+            printf("Invalid choice! Please select 1-7\n");
     }
 
 } while(choice != 7);

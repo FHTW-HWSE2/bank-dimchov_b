@@ -1,7 +1,11 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
-void create_account();
-void delete_account();
+#include "customer.h"
+
+int login(User *user);
+int create_account(User *user);
+int delete_account(User *user);
+int check_customer_balance(User *user) ;
 
 #endif
