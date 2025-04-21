@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include "../include/transaction.h"
 #include "../include/customer.h"
 #include "../include/account.h"
 
+// Function to display the menu options
 void print_help() {
     printf("\n*** WELCOME TO THE BANK ***");
     printf("\nSelect an option: ");
@@ -14,62 +14,113 @@ void print_help() {
     printf("\n 4.   Withdraw money");
     printf("\n 5.   Transfer money");
     printf("\n 6.   Report");
-    printf("\n 7.   Exit");
+    printf("\n 7.   Simulate 7 days");
+    printf("\n 8.   Exit");
+    printf("\n");
 }
 
-int main(int argc, char *argv[]) {
-    int choice = 0; 
-    User user;
+// Placeholder function for deposit
+double deposit() {
+    double amount;
+    printf("Enter the amount to deposit (whole cents only): ");
+    scanf("%lf", &amount);
 
-    srand(time(NULL));
-
-do {
-    print_help();
-    printf("\nEnter your choice: ");
-    scanf("%d", &choice);
-    printf("\n");
-
-    switch(choice){
-        case 1:
-            create_account(&user);
-            break;
-        case 2:
-            if (login(&user)) {
-                delete_account(&user);
-            }
-            break; 
-        case 3:
-            if (login(&user)) {
-                double amount = deposit();
-                update_balance_in_csv(&user, amount);
-                check_customer_balance(&user);
-            }
-            break;
-        case 4:
-            if (login(&user)) {
-                double amount = withdraw(&user);
-                update_balance_in_csv(&user, amount);
-                check_customer_balance(&user);
-            }
-            break;
-    /*  case 5:
-            if (login(&user)) {
-                double amount = transfer(&user);
-                update_balance_in_csv(&user, amount);
-                check_customer_balance(&user);
-            }
-            break; */
-        case 6:
-            report(&user);
-            break;
-        case 7: 
-            printf("Exiting... See you later!\n");
-            break;
-        default:
-            printf("Invalid choice! Please select 1-7\n");
+    if (amount <= 0) {
+        printf("Deposit amount must be positive.\n");
+        return 0;
     }
 
-} while(choice != 7);
+    return amount;
+}
+
+// Placeholder function for withdrawal
+double withdraw(User *user) {
+    double amount;
+    printf("Enter the amount to withdraw: ");
+    scanf("%lf", &amount);
+
+    if (amount <= 0) {
+        printf("Withdrawal amount must be positive.\n");
+        return 0;
+    }
+
+    if (user->balance - amount < -1000 && user->account == OVERDRAFT_LIMIT) {
+        printf("Withdrawal exceeds overdraft limit.\n");
+        return 0;
+    } else if (user->balance - amount < 0 && user->account != OVERDRAFT_LIMIT) {
+        printf("Insufficient funds.\n");
+        return 0;
+    }
+
+    return -amount; // Return negative amount for withdrawal
+}
+
+// Main function
+int main(int argc, char *argv[]) {
+    int choice = 0;
+    User users[100]; // Array to store multiple users
+    int user_count = 0; // Counter for the number of users
+
+    srand(time(NULL)); // Seed the random number generator
+
+    do {
+        print_help();
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+        printf("\n");
+
+        switch (choice) {
+            case 1: // Create an account
+                create_account(&users[user_count++]);
+                break;
+
+            case 2: // Delete an account
+                if (login(&users[0])) {
+                    delete_account(&users[0]);
+                }
+                break;
+
+            case 3: // Deposit money
+                if (login(&users[0])) {
+                    double amount = deposit();
+                    if (amount > 0) {
+                        update_balance_in_csv(&users[0], amount);
+                        check_customer_balance(&users[0]);
+                    }
+                }
+                break;
+
+            case 4: // Withdraw money
+                if (login(&users[0])) {
+                    double amount = withdraw(&users[0]);
+                    if (amount < 0) { // Ensure it's a valid withdrawal
+                        update_balance_in_csv(&users[0], amount);
+                        check_customer_balance(&users[0]);
+                    }
+                }
+                break;
+
+            case 5: // Transfer money (not yet implemented)
+                printf("Transfer functionality is not implemented yet.\n");
+                break;
+
+            case 6: // Generate a report
+                report(&users[0]);
+                break;
+
+            case 7: // Simulate 7 days
+                simulate_7_days(users, user_count);
+                break;
+
+            case 8: // Exit
+                printf("Exiting... See you later!\n");
+                break;
+
+            default: // Invalid choice
+                printf("Invalid choice! Please select a number between 1 and 8.\n");
+        }
+
+    } while (choice != 8);
 
     return 0;
 }

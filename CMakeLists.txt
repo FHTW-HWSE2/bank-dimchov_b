@@ -6,7 +6,8 @@ project(bank VERSION 1.0
                   LANGUAGES C)
 
 # Define the executable to be built from source files
-add_executable(bank src/main.c src/account.c src/transaction.c src/customer.c)
+add_executable(bank src/main.c src/account.c src/transaction.c src/customer.c
+)
 
 # Include header files
 target_include_directories(bank PRIVATE include)

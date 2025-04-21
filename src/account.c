@@ -1,5 +1,5 @@
 #include "../include/account.h"
-#include "../include/customer.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +15,7 @@ int generate_ssn(User *user) {
     return 0;
 }
 
-int choose_accounttype(User *user) {
+int chooseAccountType(User *user) {
     int choice;
 
     printf("\nPlease choose an accounttype:\n");
@@ -26,7 +26,7 @@ int choose_accounttype(User *user) {
     scanf("%d", &choice);
     
     if(choice >=0 && choice <=2) {
-        user->account = (Accounttype)choice;
+        user->account = (Account_type)choice;
         }
     else {
         printf("Invalid entry.\n");
@@ -39,7 +39,7 @@ int create_account(User *user) {
     scanf("%s", user->name);
 
     generate_ssn(user);
-    choose_accounttype(user);
+    chooseAccountType(user);
 
     if (user->account == INITIAL_BALANCE) {
         user->balance = 100.000;
