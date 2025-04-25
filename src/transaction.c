@@ -43,8 +43,6 @@ double withdraw(User *user) {
     }
 }
 
-
-
 double amount_to_transfer(User *user) {
     printf("For transfer first verify the amount you want to withdraw: \n");
 
@@ -77,7 +75,7 @@ int transfer(User *user, double amount) {
 
     //To whom?
     char recipient_name[100];
-    printf("Please enter the name of the account you want to send money to:\n ");
+    printf("Please enter the name of the account you want to send money to: ");
     scanf("%s", recipient_name);
 
     FILE *input = fopen("../customers.csv", "r");

@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../include/customer.h"
+#include "../include/transaction.h"
 
 // Global variable to store the current simulated date
 time_t simulated_date;
 
-// Structure to store transaction details
 typedef struct {
     char date[20];
     char type[20];
@@ -15,11 +15,9 @@ typedef struct {
     double amount;
 } Transaction;
 
-// Array to store transactions
 Transaction transactions[100];
 int transaction_count = 0;
 
-// Function to save account details to a CSV file
 void save_account_to_csv(User *user, char *filename) {
     FILE *file = fopen(filename, "a");
 
@@ -32,7 +30,6 @@ void save_account_to_csv(User *user, char *filename) {
     fclose(file);
 }
 
-// Function to parse a line from the CSV file
 int parse_customer_line(char *line, char *name, char *ssn, int *account, double *balance) {
     char *token = strtok(line, ",");
     if (!token) return 0;
@@ -53,7 +50,6 @@ int parse_customer_line(char *line, char *name, char *ssn, int *account, double 
     return 1;
 }
 
-// Function to read customer data from the CSV file
 int read_customer_data(User *user, const char *name, const char *ssn) {
     char line[256];
     char file_name[200], file_ssn[20];
@@ -86,7 +82,6 @@ int read_customer_data(User *user, const char *name, const char *ssn) {
     return 0;
 }
 
-// Function to update the balance in the CSV file
 int update_balance_in_csv(User *user, double new_amount) {
     FILE *input = fopen("../customers.csv", "r");
     FILE *temp = fopen("temp.csv", "w");
@@ -125,7 +120,6 @@ int update_balance_in_csv(User *user, double new_amount) {
     return 1;
 }
 
-// Function to count the total number of accounts
 int count_total_accounts() {
     FILE *file = fopen("../customers.csv", "r");
 
@@ -145,7 +139,6 @@ int count_total_accounts() {
     return count;
 }
 
-// Function to generate a report of all accounts
 void report(User *user) {
     printf("=== Customer Report ===\n");
     int total = count_total_accounts();

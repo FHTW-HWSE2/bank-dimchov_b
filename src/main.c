@@ -5,7 +5,6 @@
 #include "../include/account.h"
 #include "../include/transaction.h"
 
-// Function to display the menu options
 void print_help() {
     printf("\n*** WELCOME TO THE BANK ***");
     printf("\nSelect an option: ");
@@ -19,50 +18,13 @@ void print_help() {
     printf("\n 8.   Exit");
     printf("\n");
 }
-/*
-// Placeholder function for deposit
-double deposit() {
-    double amount;
-    printf("Enter the amount to deposit (whole cents only): ");
-    scanf("%lf", &amount);
 
-    if (amount <= 0) {
-        printf("Deposit amount must be positive.\n");
-        return 0;
-    }
-
-    return amount;
-}
-
-// Placeholder function for withdrawal
-double withdraw(User *user) {
-    double amount;
-    printf("Enter the amount to withdraw: ");
-    scanf("%lf", &amount);
-
-    if (amount <= 0) {
-        printf("Withdrawal amount must be positive.\n");
-        return 0;
-    }
-
-    if (user->balance - amount < -1000 && user->account == OVERDRAFT_LIMIT) {
-        printf("Withdrawal exceeds overdraft limit.\n");
-        return 0;
-    } else if (user->balance - amount < 0 && user->account != OVERDRAFT_LIMIT) {
-        printf("Insufficient funds.\n");
-        return 0;
-    }
-
-    return -amount; // Return negative amount for withdrawal
-}
-*/
-// Main function
 int main(int argc, char *argv[]) {
     int choice = 0;
-    User users[100]; // Array to store multiple users
-    int user_count = 0; // Counter for the number of users
+    User users;
+    int user_count = 0; 
 
-    srand(time(NULL)); // Seed the random number generator
+    srand(time(NULL)); 
 
     do {
         print_help();
@@ -71,61 +33,61 @@ int main(int argc, char *argv[]) {
         printf("\n");
 
         switch (choice) {
-            case 1: // Create an account
-                create_account(&users[user_count++]);
+            case 1: 
+                create_account(&users);
                 break;
 
-            case 2: // Delete an account
-                if (login(&users[0])) {
-                    delete_account(&users[0]);
+            case 2: 
+                if (login(&users)) {
+                    delete_account(&users);
                 }
                 break;
 
-            case 3: // Deposit money
-                if (login(&users[0])) {
+            case 3: 
+                if (login(&users)) {
                     double amount = deposit();
                     if (amount > 0) {
-                        update_balance_in_csv(&users[0], amount);
-                        check_customer_balance(&users[0]);
+                        update_balance_in_csv(&users, amount);
+                        check_customer_balance(&users);
                     }
                 }
                 break;
 
-            case 4: // Withdraw money
-                if (login(&users[0])) {
-                    double amount = withdraw(&users[0]);
-                    if (amount < 0) { // Ensure it's a valid withdrawal
-                        update_balance_in_csv(&users[0], amount);
-                        check_customer_balance(&users[0]);
+            case 4:
+                if (login(&users)) {
+                    double amount = withdraw(&users);
+                    if (amount < 0) { 
+                        update_balance_in_csv(&users, amount);
+                        check_customer_balance(&users);
                     }
                 }
                 break;
 
-            case 5: // Transfer money
-                if (login(&users[0])) {
-                    check_customer_balance(&users[0]);
-                    double amount = amount_to_transfer(&users[0]);
+            case 5: 
+                if (login(&users)) {
+                    check_customer_balance(&users);
+                    double amount = amount_to_transfer(&users);
                     if (amount < 0) {
-                        if (transfer(&users[0], amount)) {
-                            update_balance_in_csv(&users[0], amount);
+                        if (transfer(&users, amount)) {
+                            update_balance_in_csv(&users, amount);
                         }
                     }
                 }
                 break;
 
-            case 6: // Generate a report
-                report(&users[0]);
+            case 6: 
+                report(&users);
                 break;
 
-            case 7: // Simulate 7 days
-                simulate_7_days(users, user_count);
+            case 7: 
+                simulate_7_days(&users, user_count);
                 break;
 
-            case 8: // Exit
+            case 8: 
                 printf("Exiting... See you later!\n");
                 break;
 
-            default: // Invalid choice
+            default: 
                 printf("Invalid choice! Please select a number between 1 and 8.\n");
         }
 

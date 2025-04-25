@@ -4,10 +4,17 @@
 #include "customer.h"
 #include <string.h>
 
+typedef struct {
+    char date[20];
+    char type[20];
+    char account_name[200];
+    double amount;
+} Transaction;
 
-void simulate_7_days(User *users, int user_count);
 double deposit();
 double withdraw(User *user);
-int transfer(User *user, double amount);
 double amount_to_transfer(User *user);
+int transfer(User *user, double amount);
+void simulate_7_days(User *users, int user_count);
+
 #endif 
