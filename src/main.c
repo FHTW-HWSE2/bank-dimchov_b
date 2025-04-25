@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "../include/customer.h"
 #include "../include/account.h"
+#include "../include/transaction.h"
 
 // Function to display the menu options
 void print_help() {
@@ -18,7 +19,7 @@ void print_help() {
     printf("\n 8.   Exit");
     printf("\n");
 }
-
+/*
 // Placeholder function for deposit
 double deposit() {
     double amount;
@@ -54,7 +55,7 @@ double withdraw(User *user) {
 
     return -amount; // Return negative amount for withdrawal
 }
-
+*/
 // Main function
 int main(int argc, char *argv[]) {
     int choice = 0;
@@ -100,8 +101,16 @@ int main(int argc, char *argv[]) {
                 }
                 break;
 
-            case 5: // Transfer money (not yet implemented)
-                printf("Transfer functionality is not implemented yet.\n");
+            case 5: // Transfer money
+                if (login(&users[0])) {
+                    check_customer_balance(&users[0]);
+                    double amount = amount_to_transfer(&users[0]);
+                    if (amount < 0) {
+                        if (transfer(&users[0], amount)) {
+                            update_balance_in_csv(&users[0], amount);
+                        }
+                    }
+                }
                 break;
 
             case 6: // Generate a report
