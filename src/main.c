@@ -19,6 +19,22 @@ void print_help() {
     printf("\n");
 }
 
+int get_valid_choice() {
+    int choice = 0;
+    while (1) {
+        printf("\nEnter your choice: ");
+        if (scanf("%d", &choice) != 1) {  
+            while (getchar() != '\n');  
+            printf("Invalid input! Please enter a valid number.\n");
+        } else if (choice < 1 || choice > 6) {  
+            printf("Invalid choice! Please select a number between 1 and 6.\n");
+        } else {
+            break;
+        }
+    }
+    return choice;
+}
+
 int main(int argc, char *argv[]) {
     int choice = 0;
     User users;
@@ -28,9 +44,7 @@ int main(int argc, char *argv[]) {
 
     do {
         print_help();
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
-        printf("\n");
+        choice = get_valid_choice();
 
         switch (choice) {
             case 1: 

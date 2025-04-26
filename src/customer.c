@@ -8,13 +8,6 @@
 // Global variable to store the current simulated date
 time_t simulated_date;
 
-typedef struct {
-    char date[20];
-    char type[20];
-    char account_name[200];
-    double amount;
-} Transaction;
-
 Transaction transactions[100];
 int transaction_count = 0;
 
