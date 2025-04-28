@@ -4,6 +4,7 @@
 #include "../include/customer.h"
 #include "../include/account.h"
 #include "../include/transaction.h"
+#include "../include/main.h"
 
 void print_help() {
     printf("\n*** WELCOME TO THE BANK ***");
@@ -19,15 +20,24 @@ void print_help() {
     printf("\n");
 }
 
+int get_input(int *choice) {
+    return scanf("%d", choice);
+}
+
+int clear_stdin() {
+    while (getchar() != '\n');
+    return 0;
+}
+
 int get_valid_choice() {
     int choice = 0;
     while (1) {
         printf("\nEnter your choice: ");
-        if (scanf("%d", &choice) != 1) {  
-            while (getchar() != '\n');  
+        if (get_input(&choice) != 1) {
+            clear_stdin();
             printf("Invalid input! Please enter a valid number.\n");
-        } else if (choice < 1 || choice > 6) {  
-            printf("Invalid choice! Please select a number between 1 and 6.\n");
+        } else if (choice < 1 || choice > 8) {
+            printf("Invalid choice! Please select a number between 1 and 8.\n");
         } else {
             break;
         }

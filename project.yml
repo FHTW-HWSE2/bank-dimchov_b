@@ -13,8 +13,8 @@
 
   # optional features. If you don't need them, keep them turned off for performance
   :use_mocks: TRUE
-  :use_test_preprocessor: :none  # options are :none, :mocks, :tests, or :all
-  :use_deep_preprocessor: :none  # options are :none, :mocks, :tests, or :all
+  :use_test_preprocessor: :mocks  # options are :none, :mocks, :tests, or :all
+  :use_deep_preprocessor: :mocks  # options are :none, :mocks, :tests, or :all
   :use_backtrace: :simple        # options are :none, :simple, or :gdb
   :use_decorators: :auto         # decorate Ceedling's output text. options are :auto, :all, or :none
 
@@ -102,7 +102,7 @@
   :source:
     - src/**
   :include:
-    - src/** # In simple projects, this entry often duplicates :source
+    - include/** # In simple projects, this entry often duplicates :source
   :support:
     - test/support
   :libraries: []
@@ -188,8 +188,8 @@
   :fail_on_unexpected_calls: true  # Do we want cmock to fail when it encounters a function call that wasn't expected?
   :callback_include_count: true    # Do we want cmock to include the number of calls to this callback, when using callbacks?
   :callback_after_arg_check: false # Do we want cmock to enforce an argument check first when using a callback?
-  #:includes: []                   # You can add additional includes here, or specify the location with the options below
-  #:includes_h_pre_orig_header: [] 
+  #:includes: []                        # You can add additional includes here, or specify the location with the options below
+  #:includes_h_pre_orig_header: []
   #:includes_h_post_orig_header: []
   #:includes_c_pre_header:  []
   #:includes_c_post_header:  []
