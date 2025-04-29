@@ -60,7 +60,16 @@ int transfer(User *user, double amount) {
     char recipient_name[100];
     char recipient_ssn[10];
     printf("Please enter the name of the account you want to send money to: ");
-    scanf("%s", recipient_name);
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+    fgets(recipient_name, sizeof(recipient_name), stdin);
+
+    size_t length = strlen(recipient_name);
+    if (length > 0 && recipient_name[length - 1] == '\n') {
+        recipient_name[length - 1] = '\0';
+    }
+
     printf("Please enter the SSN of the account you want to send money to: ");
     scanf("%s", recipient_ssn);
 

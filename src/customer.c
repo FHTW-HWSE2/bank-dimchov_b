@@ -19,7 +19,7 @@ void save_account_to_csv(User *user, char *filename) {
         return;
     }
 
-    fprintf(file, "%s,%s,%d,%lf\n", user->name, user->SSN, user->account, user->balance);
+    fprintf(file, "%s,%s,%d,%.2lf\n", user->name, user->SSN, user->account, user->balance);
     fclose(file);
 }
 
