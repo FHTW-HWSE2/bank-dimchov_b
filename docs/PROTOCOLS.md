@@ -43,5 +43,6 @@ The project is not going to be adapted to save a second bank instance in the dat
 
 
 Pending: 
-- One client can hold multiple bank accounts
-- Testing
+- Testing (Clariza)
+- One client can hold multiple bank accounts (Clariza)
+- Total amount of money held by the bank (Dilara)
