@@ -35,3 +35,13 @@ cmock did not work as expected
 
 - instead of adding a local alias, we will generate a script for building
 
+# 05/05/25:
+- Suggested workaround to CMock:
+Hardcode simulated values (User, Input, Balance)  in a separate c-File and use the hardcoded mocks for testing instead of CMock.
+- Second bank instance:
+The project is not going to be adapted to save a second bank instance in the data of an account. The requirement will instead be developed as an isolated case to test if accounts of different bank instances is possible or not (Result: it should not be possible)
+
+
+Pending: 
+- One client can hold multiple bank accounts
+- Testing
