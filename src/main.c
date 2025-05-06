@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 8: 
-                printf("Exiting... See you later!\n");
+                printf("Exiting... Bye-byeee! Don't spend all your money at once! („• ֊ •„)੭\n");
                 break;
 
             default: 

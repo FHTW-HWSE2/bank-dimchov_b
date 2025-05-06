@@ -49,7 +49,7 @@ int create_account(User *user) {
     chooseAccountType(user);
 
     if (user->account == INITIAL_BALANCE) {
-        printf("What is the initial balance you want to put on your account?:\n ");
+        printf("What is the initial balance you want to put on your account?: ");
         scanf("%lf", &user->balance);
         if (user->balance > 100000) {
             printf("Where did you get all that money? Very sus! Go somewhere else!\n");
@@ -70,7 +70,6 @@ int login(User *user) {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 
-    printf("Please enter your name: ");
     fgets(name, sizeof(name), stdin);
 
     size_t length = strlen(name);

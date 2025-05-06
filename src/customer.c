@@ -132,10 +132,40 @@ int count_total_accounts() {
     return count;
 }
 
+double total_money_in_bank() {
+    char line[256];
+    char file_name[200], file_ssn[20];
+    int file_account;
+    double file_balance;
+    double total_balance = 0.0;
+
+    FILE *file = fopen("../customers.csv", "r");
+    if (!file) {
+        perror("Could not open customers file");
+        return 0;
+    }
+
+    while (fgets(line, sizeof(line), file)) {
+        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance)) {
+            
+            continue;
+        }
+        total_balance += file_balance;
+    }
+
+    fclose(file);
+    return total_balance;
+}
+
 void report(User *user) {
-    printf("=== Customer Report ===\n");
+    
+    printf("\n===== CUSTOMER REPORT (^‿^) =====\n");
+    
     int total = count_total_accounts();
     printf("Total accounts in system: %d\n", total);
+
+    double total_balance = total_money_in_bank();
+    printf("Total money held in bank: %.2lf$\n", total_balance);
 }
 
 // Function to simulate advancing the date by 7 days
