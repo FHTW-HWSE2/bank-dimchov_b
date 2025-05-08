@@ -119,3 +119,54 @@ int transfer(User *user, double amount) {
     return 1;
 
 }
+/**
+ * Logs a single transaction to the persistent transaction history file.
+ *
+ * @param tx Pointer to the Transaction struct containing the transaction details.
+ *
+ * This function appends the transaction data to "transactions.dat" in binary mode.
+ * It assumes the file is writable and handles closing the file after writing.
+ */
+void log_transaction(const Transaction *tx) {
+    FILE *fp = fopen("transactions.dat", "ab"); // Open file in append-binary mode
+    if (fp) {
+        fwrite(tx, sizeof(Transaction), 1, fp);  // Write one transaction record
+        fclose(fp);                              // Close the file to save changes
+    }
+}
+
+/**
+* Prints the last 10 recorded transactions from the transaction history file.
+*
+* This function reads all transactions from "transactions.dat", stores them in memory,
+* and then prints the 10 most recent ones (or fewer if less than 10 exist).
+* Each transaction includes the date, type, account name, and amount.
+*/
+void print_last_10_transactions() {
+    Transaction buffer[1000]; // Temporary storage for transactions
+    int count = 0;
+
+    FILE *fp = fopen("transactions.dat", "rb"); // Open file in read-binary mode
+    if (!fp) {
+        printf("No transaction history found.\n");
+        return;
+    }
+
+    // Read transactions into buffer
+    while (fread(&buffer[count], sizeof(Transaction), 1, fp)) {
+        count++;
+        if (count >= 1000) break;
+    }
+    fclose(fp);
+
+    // Determine where to start printing the last 10 entries
+    int start = (count > 10) ? count - 10 : 0;
+    printf("\n--- Last %d Transactions ---\n", (count < 10) ? count : 10);
+    for (int i = start; i < count; i++) {
+        printf("Date: %s | Type: %s | Account: %s | Amount: %.2f\n",
+               buffer[i].date,
+               buffer[i].type,
+               buffer[i].account_name,
+               buffer[i].amount);
+    }
+}

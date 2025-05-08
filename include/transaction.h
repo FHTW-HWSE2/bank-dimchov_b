@@ -15,6 +15,8 @@ double deposit();
 double withdraw(User *user);
 double amount_to_transfer(User *user);
 int transfer(User *user, double amount);
-void simulate_7_days(User *users, int user_count);
+void simulate_7_days(User *users, int user_count); //MS
+void log_transaction(const Transaction *tx); //MS
+void print_last_10_transactions(); //MS
 
 #endif 

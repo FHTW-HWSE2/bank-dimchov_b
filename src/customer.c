@@ -168,34 +168,54 @@ void report(User *user) {
     printf("Total money held in bank: %.2lf$\n", total_balance);
 }
 
-// Function to simulate advancing the date by 7 days
+
+/**
+ * Simulates the passage of 7 days in the system.
+ *
+ * This function updates a global simulated date, triggers a set of hardcoded
+ * deposit/withdrawal transactions based on account types, and prints a report
+ * of all transactions after the simulated time change.
+ *
+ * @param users       Array of User structures in the system.
+ * @param user_count  Total number of users.
+ */
 void simulate_7_days(User *users, int user_count) {
-    // Initialize the simulated date to the current date if not already set
+    // Initialize the simulated date to the current time if it hasn't been set yet
     if (simulated_date == 0) {
         simulated_date = time(NULL);
     }
 
-    // Advance the date by 7 days
+    // Advance the simulated date by exactly 7 days (in seconds)
     simulated_date += 7 * 24 * 60 * 60;
 
     printf("Simulated date advanced by 7 days.\n");
 
-    // Execute hardcoded transactions
+    // Execute hardcoded deposits/withdrawals based on account type
     execute_hardcoded_transactions(users, user_count);
 
-    // Generate a report of all transactions
+    // Display a report of all transactions
     generate_transaction_report();
 }
 
-// Function to execute hardcoded transactions
+/**
+ * Executes predefined deposit or withdrawal transactions for each user.
+ *
+ * - Standard accounts receive a $100 deposit.
+ * - Overdraft accounts are charged a $50 withdrawal.
+ *
+ * Each transaction is recorded into a global `transactions` array with a timestamp
+ * based on the current simulated date.
+ *
+ * @param users       Array of User structures in the system.
+ * @param user_count  Total number of users.
+ */
 void execute_hardcoded_transactions(User *users, int user_count) {
-    // Example hardcoded transactions
     for (int i = 0; i < user_count; i++) {
         if (users[i].account == STANDARD) {
-            // Deposit $100 into standard accounts
+            // Deposit $100 into standard account
             users[i].balance += 100;
 
-            // Log the transaction
+            // Log deposit transaction
             Transaction t;
             strftime(t.date, sizeof(t.date), "%Y-%m-%d", localtime(&simulated_date));
             strcpy(t.type, "Deposit");
@@ -203,10 +223,10 @@ void execute_hardcoded_transactions(User *users, int user_count) {
             t.amount = 100;
             transactions[transaction_count++] = t;
         } else if (users[i].account == OVERDRAFT_LIMIT) {
-            // Withdraw $50 from overdraft accounts
+            // Withdraw $50 from overdraft account
             users[i].balance -= 50;
 
-            // Log the transaction
+            // Log withdrawal transaction
             Transaction t;
             strftime(t.date, sizeof(t.date), "%Y-%m-%d", localtime(&simulated_date));
             strcpy(t.type, "Withdrawal");
@@ -219,7 +239,12 @@ void execute_hardcoded_transactions(User *users, int user_count) {
     printf("Hardcoded transactions executed.\n");
 }
 
-// Function to generate a report of all transactions
+/**
+ * Generates and prints a formatted report of all transactions recorded so far.
+ *
+ * This function iterates through the global `transactions` array and prints
+ * each transaction's date, type, account name, and amount in tabular format.
+ */
 void generate_transaction_report() {
     printf("\n=== Transaction Report ===\n");
     printf("Date       | Type       | Account Name       | Amount\n");
