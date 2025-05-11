@@ -157,6 +157,45 @@ double total_money_in_bank() {
     return total_balance;
 }
 
+void write_last_10_transactions() {
+    FILE *file = fopen("../log.csv", "r");
+    if (!file) {
+        perror("Could not open log file");
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long position = ftell(file);   // Get the current position of the file pointer (this is the size of the file in bytes)
+    int line_count = 0;
+
+    while(position > 0 && line_count <= 10) {
+        fseek(file, --position, SEEK_SET);  // Decrement the position by 1 byte and move the file pointer to the new position
+        char ch = fgetc(file);
+
+        if (ch == '\n') {
+            line_count++;  
+        }
+    }
+}
+
+void print_last_10_transaction() {
+    FILE *file = fopen("../log.csv", "r");
+    if (!file) {
+        perror("Could not open file");
+        return;
+    }
+
+    char line[256];
+    int line_count = 0;
+
+    while (fgets(line, sizeof(line), file) && line_count < 10) {
+        printf("%s", line);
+        line_count++;
+    }
+
+    fclose(file);
+}
+
 void report(User *user) {
     
     printf("\n===== CUSTOMER REPORT (^‿^) =====\n");
@@ -165,7 +204,10 @@ void report(User *user) {
     printf("Total accounts in system: %d\n", total);
 
     double total_balance = total_money_in_bank();
-    printf("Total money held in bank: %.2lf$\n", total_balance);
+    printf("\nTotal money held in bank: %.2lf$\n", total_balance);
+
+    printf("\n~~~ Last 10 transactions ~~~\n");
+    print_last_10_transaction();
 }
 
 // Function to simulate advancing the date by 7 days

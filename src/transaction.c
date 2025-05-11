@@ -54,6 +54,22 @@ double amount_to_transfer(User *user) {
     return validate_transaction(user, "transfer");
 }
 
+void log_transaction(const char *sender_name, const char *recipient_name, const char *recipient_ssn, double amount) {
+    FILE *log = fopen("../log.csv", "a");
+    if (!log) {
+        perror("Failed to open transaction log");
+        return;
+    }
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    char timestamp[20];
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", t);
+
+    fprintf(log, "%s,%s,%s,%s,%.2f\n", timestamp, sender_name, recipient_name, recipient_ssn, amount);
+
+    fclose(log);
+}
+
 int transfer(User *user, double amount) {
 
     //To whom?
@@ -108,6 +124,7 @@ int transfer(User *user, double amount) {
     }
     else {
         printf("Money has been transferred.\n");
+        log_transaction(user->name, recipient_name, recipient_ssn, amount);
     }
 
     fclose(input);
