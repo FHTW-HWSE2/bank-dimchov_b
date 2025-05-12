@@ -8,5 +8,6 @@
 /test/build/test
 /test/build/gcov
 /test/coverage/
+/test/mock_input.txt
 *.gcda
 *.gcno
