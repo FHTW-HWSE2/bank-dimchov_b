@@ -11,6 +11,7 @@ add_executable(
         src/main.c
         src/account.c
         src/transaction.c
+        src/transaction_helper.c
         src/customer.c
 )
 

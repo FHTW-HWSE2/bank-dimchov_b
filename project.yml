@@ -19,7 +19,7 @@
   :use_decorators: :auto         # decorate Ceedling's output text. options are :auto, :all, or :none
 
   # tweak the way ceedling handles automatic tasks
-  :build_root: build_for_test
+  :build_root: test/build
   :test_file_prefix: test_
   :default_tasks:
     - test:all
@@ -97,14 +97,14 @@
 # see documentation for the many options for specifying this.
 :paths:
   :test:
-    - +:test/**
-    - -:test/support
+    - test/**
+    # - -:test/support
   :source:
     - src/**
   :include:
     - include/** # In simple projects, this entry often duplicates :source
   :support:
-    - test/support
+   # - test/support
   :libraries: []
 
 # You can even specify specific files to add or remove from your test
@@ -142,12 +142,15 @@
 
 # Configuration Options specific to CMock. See CMock docs for details
 :cmock:
-  # Core conffiguration
+  # Core configuration
   :plugins:                        # What plugins should be used by CMock?
     - :ignore
+    - :ignore_arg
     - :callback
-  :verbosity:  2                   # the options being 0 errors only, 1 warnings and errors, 2 normal info, 3 verbose
+  :verbosity:  3                   # the options being 0 errors only, 1 warnings and errors, 2 normal info, 3 verbose
   :when_no_prototypes:  :warn      # the options being :ignore, :warn, or :erro
+  # :mock_path:
+  #  - test/build/test/mocks/**
 
   # File configuration
   :skeleton_path:  ''              # Subdirectory to store stubs when generated (default: '')
@@ -200,7 +203,10 @@
 # Configuration options specific to Unity. 
 :unity:
   :defines:
-    - UNITY_EXCLUDE_FLOAT
+    - UNITY_INCLUDE_FLOAT
+    - UNITY_INCLUDE_DOUBLE
+   # - UNITY_FLOAT_PRECISION
+   # - UNITY_DOUBLE_PRECISION
 
 # You can optionally have ceedling create environment variables for you before
 # performing the rest of its tasks.
