@@ -1,22 +1,20 @@
+#include "../include/transaction_helper.h"
 #include "../include/transaction.h"
 #include "account.h"
+#include "../include/customer.h"
+#include "../include/account.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-double deposit() {
-    double amount;
-    printf("Enter amount to deposit: $");
-    scanf("%lf", &amount);
-
-    if(amount < 0) {
-        printf("Invalid amount\n");
-        return 0.0;
+int deposit(User *users) {
+    double amount = amount_to_deposit();
+    if (amount > 0) {
+        update_balance_in_csv(users, amount);
+        check_customer_balance(users);
+        return 1;
     }
-    else {
-        printf("Successfully deposited $%.2lf\n", amount);
-        return amount;
-    }
+    return 0;
 }
 
 double validate_transaction(User *user, const char *action) {

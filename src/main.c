@@ -86,11 +86,7 @@ int main(int argc, char *argv[]) {
 
             case 3: 
                 if (login(&users)) {
-                    double amount = deposit();
-                    if (amount > 0) {
-                        update_balance_in_csv(&users, amount);
-                        check_customer_balance(&users);
-                    }
+                    deposit(&users);
                 }
                 break;
 
@@ -121,7 +117,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 7: 
-                simulate_7_days(&users, user_count);
+                // simulate_7_days(&users, user_count);
                 break;
 
             case 8: 
