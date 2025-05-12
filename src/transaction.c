@@ -14,13 +14,16 @@ int deposit(User *users) {
         check_customer_balance(users);
         return 1;
     }
-    return 0;
+
+    return -amount; 
 }
 
-int withdraw(User *user) {
-    double amount = amount_to_withdraw(user);
-    return withdraw_from_user(user, amount);
-    return withdraw_from_user(user, amount);
+double withdraw(User *user) {
+    double amount = validate_transaction(user, "withdraw");
+    if (amount == 0.0) return 0.0;
+
+    printf("Successfully withdrew $%.2lf\n", -amount);
+    return amount;
 }
 
 double amount_to_transfer(User *user) {
