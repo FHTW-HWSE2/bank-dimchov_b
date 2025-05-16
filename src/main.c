@@ -45,11 +45,28 @@ int get_valid_choice() {
     return choice;
 }
 
+void csv_header(FILE *file) {
+    char firstline[200];
+    rewind(file);
+
+    if (fgets(firstline, sizeof(firstline), file) == NULL) {
+        fprintf(file, "Name,SSN,AccountType,Balance,AccountNumber\n");
+    }
+    fseek(file, 0, SEEK_END);
+
+}
+
 int main(int argc, char *argv[]) {
     int choice = 0;
     User users;
-    int user_count = 0; 
+    int user_count = 0;
 
+    FILE *fp = fopen("../customers.csv", "a+");
+    if (fp == NULL) {
+        fprintf(stderr, "Error opening file\n");
+    }
+    csv_header(fp);
+    fclose(fp);
     srand(time(NULL)); 
 
     do {

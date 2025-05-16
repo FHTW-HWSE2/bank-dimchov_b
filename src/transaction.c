@@ -1,4 +1,5 @@
 #include "../include/transaction.h"
+#include "account.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -89,6 +90,9 @@ int transfer(User *user, double amount) {
     printf("Please enter the SSN of the account you want to send money to: ");
     scanf("%s", recipient_ssn);
 
+    printf("Please enter account number of receiving account:\n");
+    int number_of_account = (get_int_value());
+
     FILE *input = fopen("../customers.csv", "r");
     FILE *temp = fopen("temp.csv", "w");
 
@@ -103,20 +107,21 @@ int transfer(User *user, double amount) {
     char name[100], ssn[20];
     int account;
     double balance;
+    int account_number;
 
     int found = 0;
     while (fgets(line, sizeof(line), input)) {
-        if (!parse_customer_line(line, name, ssn, &account, &balance)) {
+        if (!parse_customer_line(line, name, ssn, &account, &balance, &account_number)) {
             continue;
         }
 
-        if (strcmp(name, recipient_name) == 0 && strcmp(ssn, recipient_ssn) == 0) {
+        if (strcmp(name, recipient_name) == 0 && strcmp(ssn, recipient_ssn) == 0 && number_of_account == account_number) {
             balance -= amount;
             user->balance = balance;
             found = 1;
         }
 
-        fprintf(temp, "%s,%s,%d,%.2lf\n", name, ssn, account, balance);
+        fprintf(temp, "%s,%s,%d,%.2lf,%d\n", name, ssn, account, balance, account_number);
     }
     if (!found) {
         printf("Account does not exist!\n");

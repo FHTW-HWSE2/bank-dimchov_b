@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../include/customer.h"
+
+#include <main.h>
+
 #include "../include/transaction.h"
 
 // Global variable to store the current simulated date
@@ -19,11 +22,11 @@ void save_account_to_csv(User *user, char *filename) {
         return;
     }
 
-    fprintf(file, "%s,%s,%d,%.2lf\n", user->name, user->SSN, user->account, user->balance);
+    fprintf(file, "%s,%s,%d,%.2lf,%d\n", user->name, user->SSN, user->account, user->balance, user->account_number);
     fclose(file);
 }
 
-int parse_customer_line(char *line, char *name, char *ssn, int *account, double *balance) {
+int parse_customer_line(char *line, char *name, char *ssn, int *account, double *balance, int *account_number) {
     char *token = strtok(line, ",");
     if (!token) return 0;
     strcpy(name, token);
@@ -40,14 +43,19 @@ int parse_customer_line(char *line, char *name, char *ssn, int *account, double 
     if (!token) return 0;
     *balance = atof(token);
 
+    token = strtok(NULL, ",");
+    if (!token) return 0;
+    *account_number = atoi(token);
+
     return 1;
 }
 
-int read_customer_data(User *user, const char *name, const char *ssn) {
+int read_customer_data(User *user, const char *name, const char *ssn, const int *account_number) {
     char line[256];
     char file_name[200], file_ssn[20];
     int file_account;
     double file_balance;
+    int file_account_number;
 
     FILE *file = fopen("../customers.csv", "r");
     if (!file) {
@@ -56,21 +64,20 @@ int read_customer_data(User *user, const char *name, const char *ssn) {
     }
 
     while (fgets(line, sizeof(line), file)) {
-        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance)) {
+        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance, &file_account_number)) {
             continue;
         }
-
-        if (strcmp(file_name, name) == 0 && strcmp(file_ssn, ssn) == 0) {
+        if (strcmp(file_name, name) == 0 && strcmp(file_ssn, ssn) == 0 && file_account_number == *account_number) {
             strcpy(user->name, file_name);
             strcpy(user->SSN, file_ssn);
             user->account = (Account_type)file_account;
             user->balance = file_balance;
+            user->account_number = file_account_number;
 
             fclose(file);
             return 1;
         }
     }
-
     fclose(file);
     return 0;
 }
@@ -85,23 +92,27 @@ int update_balance_in_csv(User *user, double new_amount) {
         if (temp) fclose(temp);
         return 0;
     }
+    csv_header(temp);
 
     char line[256];
     char name[200], ssn[20];
     int account;
     double balance;
+    int account_number;
+
+    fgets(line, sizeof(line), input);
 
     while (fgets(line, sizeof(line), input)) {
-        if (!parse_customer_line(line, name, ssn, &account, &balance)) {
+        if (!parse_customer_line(line, name, ssn, &account, &balance, &account_number)) {
             continue;
         }
 
-        if (strcmp(name, user->name) == 0 && strcmp(ssn, user->SSN) == 0) {
+        if (strcmp(name, user->name) == 0 && strcmp(ssn, user->SSN) == 0 && account_number == user->account_number) {
             balance += new_amount;
             user->balance = balance;
         }
 
-        fprintf(temp, "%s,%s,%d,%.2lf\n", name, ssn, account, balance);
+        fprintf(temp, "%s,%s,%d,%.2lf,%d\n", name, ssn, account, balance, account_number);
     }
 
     fclose(input);
@@ -138,6 +149,7 @@ double total_money_in_bank() {
     int file_account;
     double file_balance;
     double total_balance = 0.0;
+    int account_number;
 
     FILE *file = fopen("../customers.csv", "r");
     if (!file) {
@@ -146,7 +158,7 @@ double total_money_in_bank() {
     }
 
     while (fgets(line, sizeof(line), file)) {
-        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance)) {
+        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance, &account_number)) {
             
             continue;
         }
