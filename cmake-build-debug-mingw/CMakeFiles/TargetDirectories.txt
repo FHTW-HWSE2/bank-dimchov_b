@@ -1,0 +1,3 @@
+C:/bank-dimchov_b/cmake-build-debug-mingw/CMakeFiles/bank.dir
+C:/bank-dimchov_b/cmake-build-debug-mingw/CMakeFiles/edit_cache.dir
+C:/bank-dimchov_b/cmake-build-debug-mingw/CMakeFiles/rebuild_cache.dir
