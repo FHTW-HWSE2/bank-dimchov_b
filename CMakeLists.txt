@@ -20,3 +20,13 @@ target_include_directories(bank PRIVATE include)
 
 # Compiler Flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-unused-parameter")
+
+# Code Coverage
+if(COVERAGE)
+    add_compile_options(--coverage -O0 -g)
+    add_link_options(--coverage)
+endif()
+
+add_custom_target(coverage
+    COMMAND gcovr --root . --object-directory . --filter 'src/' --html --html-details -o coverage.html
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
