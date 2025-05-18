@@ -59,7 +59,7 @@ void csv_header(FILE *file) {
 int main(int argc, char *argv[]) {
     int choice = 0;
     User users;
-    int user_count = 0;
+    // int user_count = 0;
 
     FILE *fp = fopen("../customers.csv", "a+");
     if (fp == NULL) {
