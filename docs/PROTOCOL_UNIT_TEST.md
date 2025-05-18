@@ -1,7 +1,12 @@
-# list of unit tests
+# Unit Testing
+## Table of contents
+1 transaction.h 
+- 1.1 `int deposit(User *users)`
+- 1.2 `int deposit(User *users)`
+  - `double validate_amount_to_deposit(const char *input)`
 
-## transactions.h
-### ===== int deposit(User *users); =====
+## 01 transactions.h
+### ===== 1.1 int deposit(User *users) =====
 - valid input | PASSED
 - invalid input | PASSED
 
@@ -14,9 +19,9 @@ edited in project.yml
 ```
 Changed in to a comment in order to allow floating points during testing.
 
-### ===== double withdraw(User *user) =====
+### ===== 1.2 double withdraw(User *user) =====
 #### ====== ===== double validate_amount_to_deposit(const char *input) ===== =====
-- valid | FAILED <----------------------------------------------- !!!
+- valid | FAILED <------------- !!!
   - valid | PASSED - 18/05/25 Add all funcs to header not just the once being shared with other C-files
 - negative | PASSED
 - invalud string | PASSED
