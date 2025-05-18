@@ -87,3 +87,8 @@ Pending:
       - some refactoring might make the code more portable and secure
   - extract, refactor and replace any scanf
     - suggestion: try sscanf and fgets
+
+# 18/05/25
+- Clariza
+  - Add gcovr to CMake
+  - Comment out user_count in main.c because it is unused
