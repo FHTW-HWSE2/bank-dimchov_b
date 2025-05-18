@@ -3,12 +3,10 @@
 double validate_amount_to_deposit(const char *input) {
     double amount;
     // scanf("%lf", &amount);
-    double sscanf_val = sscanf(input, "%lf", &amount);
-    if (sscanf_val != 1) {
+    if (sscanf(input, "%lf", &amount) != 1) {
       printf("Invalid input. Please enter only numbers.\n");
       return 0.0;
     }
-    printf("sscanf result: %.2lf, amount: %.2lf\n", sscanf_val, amount);
 
     if(amount < 0) {
         printf("Invalid amount. Please enter only positive numbers.\n");
