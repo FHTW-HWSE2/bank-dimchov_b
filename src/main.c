@@ -92,11 +92,7 @@ int main(int argc, char *argv[]) {
 
             case 4:
                 if (login(&users)) {
-                    double amount = withdraw(&users);
-                    if (amount < 0) { 
-                        update_balance_in_csv(&users, amount);
-                        check_customer_balance(&users);
-                    }
+                    withdraw(&users);
                 }
                 break;
 
