@@ -1,4 +1,3 @@
-#ifdef TEST
 #include "unity.h"
 #include "mock_account.h"
 #include "mock_customer.h"
@@ -19,7 +18,8 @@ void test_deposit_success(void) {
       .name = "Testily Toastily",
       .SSN = "238598764",
       .account = 0,
-      .balance = 100.00
+      .balance = 100.00,
+      .account_number = 0
   };
 
   // mock dependencies
@@ -50,6 +50,3 @@ void test_deposit_invalid(void) {
     // epected: 0 for failure
     TEST_ASSERT_EQUAL_INT(0, result);
 }
-
-
-#endif
