@@ -1,7 +1,7 @@
 # list of unit tests
 
 ## transactions.h
-### int deposit(User *users);
+### ===== int deposit(User *users); =====
 - valid input | PASSED
 - invalid input | PASSED
 
@@ -14,9 +14,10 @@ edited in project.yml
 ```
 Changed in to a comment in order to allow floating points during testing.
 
-### double withdraw(User *user)
-#### double validate_amount_to_deposit(const char *input)
+### ===== double withdraw(User *user) =====
+#### ====== ===== double validate_amount_to_deposit(const char *input) ===== =====
 - valid | FAILED <----------------------------------------------- !!!
+  - valid | PASSED - 18/05/25 Add all funcs to header not just the once being shared with other C-files
 - negative | PASSED
 - invalud string | PASSED
 - empty input | PASSED
