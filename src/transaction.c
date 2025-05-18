@@ -1,5 +1,5 @@
-#include "../include/transaction_helper.h"
 #include "../include/transaction.h"
+#include "../include/transaction_helper.h"
 #include "account.h"
 #include "../include/customer.h"
 #include "../include/account.h"
@@ -17,35 +17,15 @@ int deposit(User *users) {
     return 0;
 }
 
-double validate_transaction(User *user, const char *action) {
-    double amount = 0.0;
-    printf("Enter amount to %s: $", action);
-    scanf("%lf", &amount);
 
+
+int withdraw(User *user) {
+    double amount = amount_to_withdraw(user);
     if (amount < 0) {
-        printf("Invalid amount!\n");
-        return 0.0;
+        update_balance_in_csv(user, amount);
+        check_customer_balance(user);
     }
-
-    if ((user->account == STANDARD || user->account == INITIAL_BALANCE) && amount > user->balance) {
-        printf("Not enough money bro!\n");
-        return 0.0;
-    }
-
-    if (user->account == OVERDRAFT_LIMIT && (user->balance - amount) < -1000) {
-        printf("Overdraft limit exceeded! You can not go below -$1000.\n");
-        return 0.0;
-    }
-
-    return -amount; 
-}
-
-double withdraw(User *user) {
-    double amount = validate_transaction(user, "withdraw");
-    if (amount == 0.0) return 0.0;
-
-    printf("Successfully withdrew $%.2lf\n", -amount);
-    return amount;
+    return 0;
 }
 
 double amount_to_transfer(User *user) {
