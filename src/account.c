@@ -1,4 +1,5 @@
 #include "../include/account.h"
+#include "../include/types.h"
 
 #include <main.h>
 #include <stdio.h>
