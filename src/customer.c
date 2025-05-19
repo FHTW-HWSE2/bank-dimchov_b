@@ -222,70 +222,34 @@ void report(User *user) {
     print_last_10_transaction();
 }
 
-// Function to simulate advancing the date by 7 days
 void simulate_7_days(User *users, int user_count) {
-    // Initialize the simulated date to the current date if not already set
-    if (simulated_date == 0) {
-        simulated_date = time(NULL);
-    }
-
-    // Advance the date by 7 days
-    simulated_date += 7 * 24 * 60 * 60;
-
     printf("Simulated date advanced by 7 days.\n");
+    printf("Simulated transactions loaded from file.\n");
 
-    // Execute hardcoded transactions
-    execute_hardcoded_transactions(users, user_count);
-
-    // Generate a report of all transactions
-    generate_transaction_report();
-}
-
-// Function to execute hardcoded transactions
-void execute_hardcoded_transactions(User *users, int user_count) {
-    // Example hardcoded transactions
-    for (int i = 0; i < user_count; i++) {
-        if (users[i].account == STANDARD) {
-            // Deposit $100 into standard accounts
-            users[i].balance += 100;
-
-            // Log the transaction
-            Transaction t;
-            strftime(t.date, sizeof(t.date), "%Y-%m-%d", localtime(&simulated_date));
-            strcpy(t.type, "Deposit");
-            strcpy(t.account_name, users[i].name);
-            t.amount = 100;
-            transactions[transaction_count++] = t;
-        } else if (users[i].account == OVERDRAFT_LIMIT) {
-            // Withdraw $50 from overdraft accounts
-            users[i].balance -= 50;
-
-            // Log the transaction
-            Transaction t;
-            strftime(t.date, sizeof(t.date), "%Y-%m-%d", localtime(&simulated_date));
-            strcpy(t.type, "Withdrawal");
-            strcpy(t.account_name, users[i].name);
-            t.amount = -50;
-            transactions[transaction_count++] = t;
-        }
+    FILE *file = fopen("../simulated_transactions.csv", "r");
+    if (!file) {
+        perror("Could not open simulated_transactions.csv");
+        return;
     }
 
-    printf("Hardcoded transactions executed.\n");
-}
+    char line[256];
+    int line_num = 0;
 
-// Function to generate a report of all transactions
-void generate_transaction_report() {
-    printf("\n=== Transaction Report ===\n");
+    printf("\n=== Simulated Transaction Report ===\n");
     printf("Date       | Type       | Account Name       | Amount\n");
     printf("-----------------------------------------------------\n");
 
-    for (int i = 0; i < transaction_count; i++) {
-        printf("%-10s | %-10s | %-18s | $%.2lf\n",
-               transactions[i].date,
-               transactions[i].type,
-               transactions[i].account_name,
-               transactions[i].amount);
+    while (fgets(line, sizeof(line), file)) {
+        if (line_num++ == 0) continue; // Skip header line
+
+        char date[20], type[20], name[100];
+        double amount;
+
+        if (sscanf(line, "%19[^,],%19[^,],%99[^,],%lf", date, type, name, &amount) == 4) {
+            printf("%-10s | %-10s | %-18s | $%.2lf\n", date, type, name, amount);
+        }
     }
 
     printf("-----------------------------------------------------\n");
+    fclose(file);
 }
