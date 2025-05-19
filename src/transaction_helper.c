@@ -56,8 +56,6 @@ double validate_amount_for_transaction(const char *action) {
         return 0.0;
     }
 
-
-// ===== DEPOSIT
     double amount = parse_amount(buffer);
     return amount;
 }
