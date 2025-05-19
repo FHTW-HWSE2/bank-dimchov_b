@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../include/customer.h"
+#include "../include/types.h"
 
 #include <main.h>
 

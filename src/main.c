@@ -5,6 +5,7 @@
 #include "../include/account.h"
 #include "../include/transaction.h"
 #include "../include/main.h"
+#include "../include/types.h"
 
 void print_help() {
     printf("\n*** WELCOME TO THE BANK ***");

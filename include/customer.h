@@ -2,21 +2,7 @@
 #define CUSTOMER_H
 
 #include <time.h>
-
-typedef enum {
-    STANDARD = 0,
-    INITIAL_BALANCE,
-    OVERDRAFT_LIMIT
-} Account_type;
-
-typedef struct {
-    char name[200];
-    char SSN[20];
-    Account_type account;
-    double balance;
-    char bank;
-    int account_number;
-} User;
+#include "types.h"
 
 void report(User *user);
 void generate_transaction_report(); 
