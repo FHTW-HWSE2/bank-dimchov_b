@@ -16,15 +16,9 @@ int deposit(User *users) {
     return 0;
 }
 
-
-
 int withdraw(User *user) {
     double amount = amount_to_withdraw(user);
-    if (amount < 0) {
-        update_balance_in_csv(user, amount);
-        check_customer_balance(user);
-    }
-    return 0;
+    return withdraw_from_user(user, amount);
 }
 
 double amount_to_transfer(User *user) {

@@ -1,7 +1,8 @@
 #include "unity.h"
 #include "mock_account.h"
-#include "mock_customer.h"
+//#include "mock_customer.h"
 #include "mock_transaction_helper.h"
+#include "customer.h"
 #include "transaction.h"
 
 void setUp(void) {}
@@ -9,11 +10,13 @@ void tearDown(void) {}
 
 // ======= UNIT TEST =======
 // ======= 01 deposit()
+// ======= 02 withdraw()
+
 
 // =========================
 // ======= 01 deposit()
 // =========================
-void test_deposit_success(void) {
+void test_deposit_SUCCESS(void) {
   User test_user = {
       .name = "Testily Toastily",
       .SSN = "238598764",
@@ -35,7 +38,7 @@ void test_deposit_success(void) {
   TEST_ASSERT_EQUAL_INT(1, result);
 }
 
-void test_deposit_invalid(void) {
+void test_deposit_INVALID(void) {
     User test_user = {
         .name = "Testily Toastily",
         .SSN = "238598764",
@@ -49,4 +52,24 @@ void test_deposit_invalid(void) {
     int result = deposit(&test_user);
     // epected: 0 for failure
     TEST_ASSERT_EQUAL_INT(0, result);
+}
+
+// =========================
+// ======= 02 withdraw()
+// =========================
+void test_withdraw_SUCCESS(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = 0,
+        .balance = 100.00
+    };
+
+    amount_to_withdraw_ExpectAndReturn(&test_user, 10.10);
+
+    // mock valid withdrawal
+    withdraw_from_user_ExpectAndReturn(&test_user, 10.10, 1);
+
+    int result = withdraw(&test_user);
+    TEST_ASSERT_EQUAL_INT(1, result);
 }
