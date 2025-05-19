@@ -1,5 +1,6 @@
 #include "../include/account.h"
 #include "../include/main.h"
+#include "../include/customer.h"
 #include "../include/types.h"
 #include <stdio.h>
 #include <stdlib.h>

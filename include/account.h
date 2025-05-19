@@ -1,7 +1,7 @@
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
 
-#include "customer.h"
+#include "types.h"
 
 int get_int_value();
 int login(User *user);
