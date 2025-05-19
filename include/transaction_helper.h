@@ -1,9 +1,11 @@
 #ifndef TRANSACTIONS_HELPER_H
 #define TRANSACTIONS_HELPER_H
 
-double amount_to_deposit();
+#include "types.h"
+
 double validate_amount_to_deposit(const char *input);
 int clear_buffer();
+double amount_to_deposit();
 
 double validate_transaction(User *user, const char *action);
 double amount_to_withdraw(User *user);

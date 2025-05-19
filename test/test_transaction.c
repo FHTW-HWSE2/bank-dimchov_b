@@ -1,8 +1,8 @@
 #include "unity.h"
 #include "mock_account.h"
-//#include "mock_customer.h"
+#include "mock_customer.h"
 #include "mock_transaction_helper.h"
-#include "customer.h"
+#include "types.h"
 #include "transaction.h"
 
 void setUp(void) {}

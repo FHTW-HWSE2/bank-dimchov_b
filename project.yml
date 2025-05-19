@@ -21,6 +21,13 @@
   # tweak the way ceedling handles automatic tasks
   :build_root: test/build
   :test_file_prefix: test_
+  :test_build:
+    :source_files:
+      - src/account.c
+      - src/customer.c
+      - src/main.c
+      - src/transaction.c
+      - src/transaction_helper.c
   :default_tasks:
     - test:all
 
@@ -44,7 +51,7 @@
 # further details to configure the way Ceedling handles release code
 :release_build:
   :output: MyApp.out
-  :use_assembly: FALSE
+  #:use_assembly: FALSE
   :artifacts: []
 
 # Plugins are optional Ceedling features which can be enabled. Ceedling supports
@@ -56,7 +63,7 @@
   :enabled:
     #- beep                           # beeps when finished, so you don't waste time waiting for ceedling
     - module_generator                # handy for quickly creating source, header, and test templates
-    #- gcov                           # test coverage using gcov. Requires gcc, gcov, and a coverage analyzer like gcovr
+    - gcov                           # test coverage using gcov. Requires gcc, gcov, and a coverage analyzer like gcovr
     #- bullseye                       # test coverage using bullseye. Requires bullseye for your platform
     #- command_hooks                  # write custom actions to be called at different points during the build process
     #- compile_commands_json_db       # generate a compile_commands.json file
@@ -240,15 +247,15 @@
 # For more information on these options, see docs in plugins/gcov
 :gcov:
   :summaries: TRUE                # Enable simple coverage summaries to console after tests
-  :report_task: FALSE             # Disabled dedicated report generation task (this enables automatic report generation)
+  :report_task: TRUE             # Disabled dedicated report generation task (this enables automatic report generation)
   :utilities:
     - gcovr           # Use gcovr to create the specified reports (default).
     #- ReportGenerator # Use ReportGenerator to create the specified reports.
   :reports: # Specify one or more reports to generate.
     # Make an HTML summary report.
     - HtmlBasic
-    # - HtmlDetailed
-    # - Text
+    - HtmlDetailed
+    - Text
     # - Cobertura
     # - SonarQube
     # - JSON
@@ -267,12 +274,12 @@
     # - Xml
     # - XmlSummary
   :gcovr:
-    # :html_artifact_filename: TestCoverageReport.html
-    # :html_title: Test Coverage Report
+    :html_artifact_filename: test/coverage/index.html
+    :html_title: Test Coverage Report
     :html_medium_threshold: 75
     :html_high_threshold: 90
     # :html_absolute_paths: TRUE
-    # :html_encoding: UTF-8
+    :html_encoding: UTF-8
 
 # :module_generator:
 #   :naming: :snake #options: :bumpy, :camel, :caps, or :snake

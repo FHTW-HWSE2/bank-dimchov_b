@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "types.h"
 #include "transaction_helper.h"
 
 void setup(void) {}
