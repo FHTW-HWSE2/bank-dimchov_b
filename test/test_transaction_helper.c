@@ -384,6 +384,6 @@ void test_validate_amount_to_deposit_MIXED_DATATYPES_LEADING_CHAR(void) {
 
 void test_validate_amount_to_deposit_WHITESPACE(void) {
   double result = validate_amount_to_deposit("    15.15 ");
-  // TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
-  TEST_ASSERT_DOUBLE_WITHIN(0.0001, 15.15, result);
+  TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
+  //TEST_ASSERT_DOUBLE_WITHIN(0.0001, 15.15, result);
 }

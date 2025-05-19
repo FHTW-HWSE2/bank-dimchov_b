@@ -245,4 +245,3 @@ void simulate_7_days(User *users, int user_count) {
     printf("-----------------------------------------------------\n");
     fclose(file);
 }
-*/
