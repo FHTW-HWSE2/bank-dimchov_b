@@ -12,5 +12,3 @@ void report(User *user);
 // void simulate_7_days(User *users, int user_count);
 void execute_hardcoded_transactions(User *users, int user_count);
 void generate_transaction_report();
-
-#endif

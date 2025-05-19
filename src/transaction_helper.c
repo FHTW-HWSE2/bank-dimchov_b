@@ -3,6 +3,9 @@
 #include "../include/customer.h"
 #include "../include/types.h"
 #include <ctype.h>
+#include "../include/account.h"
+#include "../include/customer.h"
+#include "../include/types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,6 +56,8 @@ double validate_amount_for_transaction(const char *action) {
         return 0.0;
     }
 
+
+// ===== DEPOSIT
     double amount = parse_amount(buffer);
     return amount;
 }

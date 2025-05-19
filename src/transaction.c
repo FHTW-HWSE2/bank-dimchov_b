@@ -20,6 +20,12 @@ int deposit(User *users) {
 int withdraw(User *user) {
     double amount = amount_to_withdraw(user);
     return withdraw_from_user(user, amount);
+    return withdraw_from_user(user, amount);
+}
+
+double amount_to_transfer(User *user) {
+    printf("For transfer first verify the amount you want to withdraw:\n");
+    return validate_transaction(user, "transfer");
 }
 
 void log_transaction(const char *sender_name, const char *recipient_name, const char *recipient_ssn, double amount) {
