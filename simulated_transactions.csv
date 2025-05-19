@@ -1,0 +1,14 @@
+date,type,account_name,amount
+2025-05-20,Deposit,mohamad,150.00
+2025-05-20,Withdrawal,clarisa,-50.00
+2025-05-21,Deposit,marie,120.00
+2025-05-21,Deposit,dilaria,200.00
+2025-05-22,Withdrawal,mohamad,-30.00
+2025-05-22,Deposit,clarisa,100.00
+2025-05-23,Deposit,marie,90.00
+2025-05-23,Withdrawal,dilaria,-60.00
+2025-05-24,Deposit,mohamad,250.00
+2025-05-24,Deposit,clarisa,75.00
+2025-05-25,Withdrawal,marie,-100.00
+2025-05-25,Deposit,dilaria,180.00
+2025-05-26,Deposit,mohamad,130.00
