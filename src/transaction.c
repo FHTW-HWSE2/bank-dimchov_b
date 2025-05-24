@@ -15,7 +15,7 @@ int deposit(User *users) {
         return 1;
     }
 
-    return -amount; 
+    return -amount;
 }
 
 double withdraw(User *user) {
