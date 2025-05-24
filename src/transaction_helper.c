@@ -24,8 +24,8 @@ double validate_amount_to_deposit(const char *input) {
 }
 
 int clear_buffer(){
-    while (getchar() != '\n' &&  getchar() != EOF);
-    return 0;
+  while (getchar() != '\n' &&  getchar() != EOF);
+  return 0;
 }
 
 double amount_to_deposit() {
@@ -33,8 +33,8 @@ double amount_to_deposit() {
     clear_buffer();
     printf("Enter amount to deposit: $");
     if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-        printf("Failed to read input. Please enter only numbers.\n");
-        return 0.0;
+      printf("Failed to read input. Please enter only numbers.\n");
+      return 0.0;
     }
     return validate_amount_to_deposit(buffer);
 }
