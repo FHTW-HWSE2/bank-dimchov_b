@@ -227,6 +227,12 @@ void test_validate_amount_to_deposit_WHITESPACE(void) {
   // TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
   TEST_ASSERT_DOUBLE_WITHIN(0.0001, 15.15, result);
 }
+
+void test_clear_buffer(void) {
+  TEST_ASSERT_EQUAL(0, clear_buffer());
+  // TEST_IGNORE();
+}
+
 // =========================
 // ======= 03 withdraw:
 //            amount_to_withdraw()
