@@ -17,29 +17,6 @@ int deposit(User *users) {
     return 0;
 }
 
-double validate_transaction(User *user, const char *action) {
-    double amount = 0.0;
-    printf("Enter amount to %s: $", action);
-    scanf("%lf", &amount);
-
-    if (amount < 0) {
-        printf("Invalid amount!\n");
-        return 0.0;
-    }
-
-    if ((user->account == STANDARD || user->account == INITIAL_BALANCE) && amount > user->balance) {
-        printf("Not enough money bro!\n");
-        return 0.0;
-    }
-
-    if (user->account == OVERDRAFT_LIMIT && (user->balance - amount) < -1000) {
-        printf("Overdraft limit exceeded! You can not go below -$1000.\n");
-        return 0.0;
-    }
-
-    return -amount; 
-}
-
 int withdraw(User *user) {
     double amount = amount_to_withdraw(user);
     return withdraw_from_user(user, amount);
