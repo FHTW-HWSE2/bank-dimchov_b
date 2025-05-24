@@ -90,6 +90,7 @@ Pending:
 
 # 18/05/25
 - Clariza
-  - Add gcovr to CMake
+  - Add gcovr through Ceedling
+  - generate gcovr html 
+    - `gcovr --html --html-details -o test/coverage/index.html test/build`
   - Comment out user_count in main.c because it is unused
-  - generate gcovr html `gcovr --html --html-details -o test/coverage/index.html test/build`
