@@ -6,6 +6,7 @@
 /test/build/artifacts
 /test/build/logs
 /test/build/test
+/test/build/gcov
 /test/coverage/
 *.gcda
 *.gcno

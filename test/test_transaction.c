@@ -65,6 +65,7 @@ void test_withdraw_SUCCESS(void) {
         .balance = 100.00
     };
 
+    // mock valid amount to withdraw
     amount_to_withdraw_ExpectAndReturn(&test_user, 10.10);
 
     // mock valid withdrawal

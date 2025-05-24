@@ -40,7 +40,7 @@ double amount_to_deposit() {
 }
 
 // ===== WITHDRAW
-/*double validate_transaction(User *user, const char *action) {
+double validate_transaction(User *user, const char *action) {
     double amount = 0.0;
     printf("Enter amount to %s: $", action);
     scanf("%lf", &amount);
@@ -78,4 +78,4 @@ int withdraw_from_user(User *user, double amount) {
         return 1;
     }
     return 0;
-}*/
+}
