@@ -2,6 +2,7 @@
 #include "../include/transaction.h"
 #include "../include/account.h"
 #include "../include/customer.h"
+#include "../include/types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
