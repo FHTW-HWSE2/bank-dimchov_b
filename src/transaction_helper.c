@@ -46,37 +46,6 @@ double validate_amount_for_transaction(const char *action) {
     return amount;
 }
 
-// ===== DEPOSIT
-double validate_amount_to_deposit(const char *input) {
-    double amount;
-    // scanf("%lf", &amount);
-    if (sscanf(input, "%lf", &amount) != 1) {
-      printf("Invalid input. Please enter only numbers.\n");
-      return 0.0;
-    }
-
-    if(amount < 0) {
-        printf("Invalid amount. Please enter only positive numbers.\n");
-        return 0.0;
-    }
-    else {
-        printf("Successfully deposited $%.2lf\n", amount);
-        return amount;
-    }
-}
-
-double amount_to_deposit() {
-    char buffer[50];
-    clear_buffer();
-    printf("Enter amount to deposit: $");
-    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
-      printf("Failed to read input. Please enter only numbers.\n");
-      return 0.0;
-    }
-    return validate_amount_to_deposit(buffer);
-}
-
-// ===== WITHDRAW
 double validate_transaction(User *user, const char *action) {
     // double amount = 0.0;
     // clear_buffer();
@@ -103,6 +72,41 @@ double validate_transaction(User *user, const char *action) {
     return -amount;
 }
 
+// ===== DEPOSIT
+// double validate_amount_to_deposit(const char *input) {
+//     // double amount;
+//     // scanf("%lf", &amount);
+//     // if (sscanf(input, "%lf", &amount) != 1) {
+//     //   printf("Invalid input. Please enter only numbers.\n");
+//     //   return 0.0;
+//     // }
+//
+//     double amount = validate_amount_for_transaction("deposit");
+//
+//     if(amount < 0) {
+//         printf("Invalid amount. Please enter only positive numbers.\n");
+//         return 0.0;
+//     }
+//     else {
+//         printf("Successfully deposited $%.2lf\n", amount);
+//         return amount;
+//     }
+// }
+
+double amount_to_deposit() {
+    double amount = validate_amount_for_transaction("deposit");
+
+    if(amount < 0) {
+        printf("Invalid amount. Please enter only positive numbers.\n");
+        return 0.0;
+    }
+    else {
+        printf("Successfully deposited $%.2lf\n", amount);
+        return amount;
+    }
+}
+
+// ===== WITHDRAW
 double amount_to_withdraw(User *user) {
     double amount = validate_transaction(user, "withdraw");
     if (amount == 0.0) return 0.0;
