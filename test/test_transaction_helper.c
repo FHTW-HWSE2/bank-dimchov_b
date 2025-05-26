@@ -233,8 +233,8 @@ void test_validate_amount_to_deposit_WHITESPACE(void) {
 
 // ======= clear_buffer()
 void test_clear_buffer(void) {
-  TEST_ASSERT_EQUAL(0, clear_buffer());
-  // TEST_IGNORE();
+    TEST_ASSERT_EQUAL(0, clear_buffer());
+    // TEST_IGNORE();
 }
 
 // =========================
