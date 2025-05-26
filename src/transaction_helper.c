@@ -1,8 +1,50 @@
+#include <ctype.h>
+
 #include "../include/account.h"
 #include "../include/customer.h"
 #include "../include/types.h"
 #include <stdio.h>
+#include <stdlib.h>
 
+// ===== TRANSACTION
+int clear_buffer(){
+    while (getchar() != '\n' &&  getchar() != EOF);
+    return 0;
+}
+
+double parse_amount(const char *input) {
+    char *endptr;
+    double amount = strtod(input, &endptr);
+
+    if (endptr == input) {
+        printf("Invalid input. Please enter only numbers.\n");
+        return 0.0;
+    }
+
+    // Check for further non-whitespace trailing characters
+    while (*endptr != '\0') {
+        if (!isspace((unsigned char)*endptr)) {
+            printf("Invalid characters found. Please enter only numbers.\n");
+            return 0.0;
+        }
+        endptr++;
+    }
+
+    return amount;
+}
+
+double validate_amount_for_transaction(const char *action) {
+    char buffer[50];
+    clear_buffer();
+    printf("Enter amount to %s: $", action);
+    if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+        printf("Failed to read input. Please enter only numbers.\n");
+        return 0.0;
+    }
+
+    double amount = parse_amount(buffer);
+    return amount;
+}
 
 // ===== DEPOSIT
 double validate_amount_to_deposit(const char *input) {
@@ -41,9 +83,12 @@ double amount_to_deposit() {
 
 // ===== WITHDRAW
 double validate_transaction(User *user, const char *action) {
-    double amount = 0.0;
-    printf("Enter amount to %s: $", action);
-    scanf("%lf", &amount);
+    // double amount = 0.0;
+    // clear_buffer();
+    // printf("Enter amount to %s: $", action);
+    // scanf("%lf", &amount);
+
+    double amount = validate_amount_for_transaction(action);
 
     if (amount < 0) {
         printf("Invalid amount!\n");
