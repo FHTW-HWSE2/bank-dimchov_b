@@ -94,3 +94,8 @@ Pending:
   - generate gcovr html 
     - `gcovr --html --html-details -o test/coverage/index.html test/build`
   - Comment out user_count in main.c because it is unused
+
+# 26/05/2025
+  - Clariza
+    - [ ] Transfering money between two bank institutes is not possible
+    - [ ] Actually simulate 7 days of transactions
