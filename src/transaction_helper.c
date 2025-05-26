@@ -12,7 +12,6 @@
 
 // ===== TRANSACTION
 int clear_buffer(){
-    // EXCLUDE from unit test
     #ifndef TEST
         while (getchar() != '\n' &&  getchar() != EOF);
     #endif
@@ -116,28 +115,7 @@ double validate_transaction(User *user, const char *action) {
     return -amount;
 }
 
-// ===== WITHDRAW
 // ===== DEPOSIT
-// double validate_amount_to_deposit(const char *input) {
-//     // double amount;
-//     // scanf("%lf", &amount);
-//     // if (sscanf(input, "%lf", &amount) != 1) {
-//     //   printf("Invalid input. Please enter only numbers.\n");
-//     //   return 0.0;
-//     // }
-//
-//     double amount = validate_amount_for_transaction("deposit");
-//
-//     if(amount < 0) {
-//         printf("Invalid amount. Please enter only positive numbers.\n");
-//         return 0.0;
-//     }
-//     else {
-//         printf("Successfully deposited $%.2lf\n", amount);
-//         return amount;
-//     }
-// }
-
 double amount_to_deposit() {
     double amount = validate_amount_for_transaction("deposit");
 
