@@ -127,3 +127,7 @@ Pending:
           - Report shall be displayed in a table format
             - Timestamp | Sender | Recipient | Amount
             
+# 26/05/2025
+  - Clariza
+    - [ ] Transfering money between two bank institutes is not possible
+    - [ ] Actually simulate 7 days of transactions
