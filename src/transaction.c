@@ -48,11 +48,16 @@ int transfer(User *user, double amount) {
     //To whom?
     char recipient_name[100];
     char recipient_ssn[10];
-    printf("Please enter the name of the account you want to send money to: ");
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
 
-    fgets(recipient_name, sizeof(recipient_name), stdin);
+    printf("Please enter the name of the account you want to send money to: ");
+    // int c;
+    // while ((c = getchar()) != '\n' && c != EOF);
+
+    // fgets(recipient_name, sizeof(recipient_name), stdin);
+    if (fgets(recipient_name, sizeof(recipient_name), stdin) == NULL) {
+        printf("Failed to read input. Please try again.\n");
+        return 0;
+    }
 
     size_t length = strlen(recipient_name);
     if (length > 0 && recipient_name[length - 1] == '\n') {
@@ -62,7 +67,7 @@ int transfer(User *user, double amount) {
     printf("Please enter the SSN of the account you want to send money to: ");
     scanf("%s", recipient_ssn);
 
-    printf("Please enter account number of receiving account:\n");
+    printf("Please enter account number of receiving account: ");
     int number_of_account = (get_int_value());
 
     FILE *input = fopen("../customers.csv", "r");
