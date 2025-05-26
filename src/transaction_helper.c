@@ -8,26 +8,35 @@
 
 // ===== TRANSACTION
 int clear_buffer(){
-    while (getchar() != '\n' &&  getchar() != EOF);
-    return 0;
+    #ifndef TEST
+        while (getchar() != '\n' &&  getchar() != EOF);
+    #endif
+        return 0;
 }
 
 double parse_amount(const char *input) {
-    char *endptr;
-    double amount = strtod(input, &endptr);
+    char *trail_ptr;
+    // string to double
+    // strtod(const char *input, char **ptr_to_first_char_after_num)
+    double amount = strtod(input, &trail_ptr);
 
-    if (endptr == input) {
+    if (trail_ptr == input) {
         printf("Invalid input. Please enter only numbers.\n");
         return 0.0;
     }
 
+    if (amount < 0.0) {
+        printf("Negative numbers are not allowed. Please enter only positive numbers.\n");
+        return 0.0;
+    }
+
     // Check for further non-whitespace trailing characters
-    while (*endptr != '\0') {
-        if (!isspace((unsigned char)*endptr)) {
+    while (*trail_ptr != '\0') {
+        if (!isspace((unsigned char)*trail_ptr)) {
             printf("Invalid characters found. Please enter only numbers.\n");
             return 0.0;
         }
-        endptr++;
+        trail_ptr++;
     }
 
     return amount;
@@ -109,26 +118,6 @@ double validate_transaction(User *user, const char *action) {
 }
 
 // ===== DEPOSIT
-// double validate_amount_to_deposit(const char *input) {
-//     // double amount;
-//     // scanf("%lf", &amount);
-//     // if (sscanf(input, "%lf", &amount) != 1) {
-//     //   printf("Invalid input. Please enter only numbers.\n");
-//     //   return 0.0;
-//     // }
-//
-//     double amount = validate_amount_for_transaction("deposit");
-//
-//     if(amount < 0) {
-//         printf("Invalid amount. Please enter only positive numbers.\n");
-//         return 0.0;
-//     }
-//     else {
-//         printf("Successfully deposited $%.2lf\n", amount);
-//         return amount;
-//     }
-// }
-
 double amount_to_deposit() {
     double amount = validate_amount_for_transaction("deposit");
 
