@@ -5,6 +5,9 @@
 #include "types.h"
 #include "transaction_helper.h"
 #include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void setup(void) {}
 void teardown(void) {
@@ -228,6 +231,7 @@ void test_validate_amount_to_deposit_WHITESPACE(void) {
   TEST_ASSERT_DOUBLE_WITHIN(0.0001, 15.15, result);
 }
 
+// ======= clear_buffer()
 void test_clear_buffer(void) {
   TEST_ASSERT_EQUAL(0, clear_buffer());
   // TEST_IGNORE();
