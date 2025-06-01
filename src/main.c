@@ -99,13 +99,7 @@ int main(int argc, char *argv[]) {
 
             case 5: 
                 if (login(&users)) {
-                    check_customer_balance(&users);
-                    double amount = amount_to_transfer(&users);
-                    if (amount < 0) {
-                        if (transfer(&users, amount)) {
-                            update_balance_in_csv(&users, amount);
-                        }
-                    }
+                    transfer(&users);
                 }
                 break;
 
