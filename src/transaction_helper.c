@@ -8,6 +8,7 @@
 
 // ===== TRANSACTION
 int clear_buffer(){
+    // EXCLUDE from unit test
     #ifndef TEST
         while (getchar() != '\n' &&  getchar() != EOF);
     #endif
@@ -89,7 +90,10 @@ double amount_to_deposit() {
         printf("Invalid amount. Please enter only positive numbers.\n");
         return 0.0;
     }
-    else {
+    else if (amount == 0.0) {
+        printf("Error: $%.2lf money was deposited.\n", amount);
+        return 0.0;
+    } else {
         printf("Successfully deposited $%.2lf\n", amount);
         return amount;
     }

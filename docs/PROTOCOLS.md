@@ -99,3 +99,5 @@ Pending:
   - Clariza
     - [ ] Transfering money between two bank institutes is not possible
     - [ ] Actually simulate 7 days of transactions
+    - Refactored transfer()
+      - Rename original transfer() to validate_recipient()

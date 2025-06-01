@@ -43,17 +43,16 @@ void log_transaction(const char *sender_name, const char *recipient_name, const 
     fclose(log);
 }
 
-int transfer(User *user, double amount) {
+// char *validate_recipient_name(const char *user) {}
+// char *validate_recipient_ssn(const char *user) {}
 
+int validate_recipient(User *user, double amount) {
     //To whom?
     char recipient_name[100];
     char recipient_ssn[10];
 
     printf("Please enter the name of the account you want to send money to: ");
-    // int c;
-    // while ((c = getchar()) != '\n' && c != EOF);
 
-    // fgets(recipient_name, sizeof(recipient_name), stdin);
     if (fgets(recipient_name, sizeof(recipient_name), stdin) == NULL) {
         printf("Failed to read input. Please try again.\n");
         return 0;
@@ -117,4 +116,16 @@ int transfer(User *user, double amount) {
 
     return 1;
 
+}
+
+int transfer(User *users) {
+    check_customer_balance(users);
+    double amount = amount_to_transfer(users);
+    if (amount < 0) {
+        if (validate_recipient(users, amount)) {
+            update_balance_in_csv(users, amount);
+            return 0;
+        }
+    }
+    return 1;
 }
