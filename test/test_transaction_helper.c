@@ -5,9 +5,6 @@
 #include "types.h"
 #include "transaction_helper.h"
 #include <stdio.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 void setup(void) {}
 void teardown(void) {

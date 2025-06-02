@@ -22,11 +22,6 @@ int withdraw(User *user) {
     return withdraw_from_user(user, amount);
 }
 
-double amount_to_transfer(User *user) {
-    printf("For transfer first verify the amount you want to withdraw:\n");
-    return validate_transaction(user, "transfer");
-}
-
 void log_transaction(const char *sender_name, const char *recipient_name, const char *recipient_ssn, double amount) {
     FILE *log = fopen("../log.csv", "a");
     if (!log) {
