@@ -1,11 +1,10 @@
 #include "unity.h"
 #include "mock_account.h"
 #include "mock_customer.h"
+#include "mock_transaction.h"
 #include "types.h"
 #include "transaction_helper.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 void setup(void) {}
 void teardown(void) {
@@ -18,7 +17,8 @@ void teardown(void) {
 // ======= 00 mock dependecies
 // ======= 01 dependecies
 // ======= 02 deposit()
-// ======= 03 withdraw()
+// ======= 03 withdraw() // MISSING
+// ======= 04 transfer()
 
 // =========================
 // ======= 00 mock dependecies
@@ -27,7 +27,6 @@ void mock_stdin(const char *input) {
     fprintf(file, "%s\n", input);
     fclose(file);
 
-    // rewind(file);
     freopen("test/mock_input.txt", "r", stdin);
 }
 
@@ -36,6 +35,7 @@ void mock_stdin(const char *input) {
 //         clear_buffer()
 //         parse_amount()
 //         validate_amount_for_transaction()
+//         validate_transaction()
 //         amount_to_deposit()
 // =========================
 
@@ -63,7 +63,6 @@ void test_parse_amount_INVALID_STRING_LEAD(void) {
 }
 
 // ======= validate_amount_for_transaction()
-
 void test_validate_amount_for_transaction_VALID(void) {
     mock_stdin("15.15");
     double result = validate_amount_for_transaction("deposit");
@@ -114,10 +113,197 @@ void test_validate_amount_for_transaction_INVALID_STRING_WITH_WHITESPACE(void) {
 
 // ======= validate_transaction()
 void test_validate_transaction_VALID(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
 
+    mock_stdin("15.15");
+    double result = validate_transaction(&test_user,"withdraw");
+    TEST_ASSERT_EQUAL_DOUBLE(-15.15, result);
+}
+
+void test_validate_transaction_INVALID_NEGATIVE_NUM(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    mock_stdin("-15.15");
+    double result = validate_transaction(&test_user,"withdraw");
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+void test_validate_transaction_INVALID_INSUFFICIENT_BALANCE_STANDARD(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    mock_stdin("150.15");
+    double result = validate_transaction(&test_user,"withdraw");
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+void test_validate_transaction_INVALID_INSUFFICIENT_BALANCE_INITIAL_BALANCE(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = INITIAL_BALANCE,
+        .balance = 100.00
+    };
+
+    mock_stdin("150.15");
+    double result = validate_transaction(&test_user,"withdraw");
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+
+void test_validate_transaction_INVALID_OVERDRAFT_LIMIT_EXCEEDED(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = OVERDRAFT_LIMIT,
+        .balance = 100.00
+    };
+
+    mock_stdin("1500.15");
+    double result = validate_transaction(&test_user,"withdraw");
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
 }
 
 // =========================
 // ======= 02 deposit:
-//
+//            amount_to_deposit()
 // =========================
+void test_amount_to_deposit_VALID(void) {
+    mock_stdin("15.15");
+    double result = amount_to_deposit();
+    TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
+}
+
+void test_amount_to_deposit_VALID_WHITESPACE(void) {
+    mock_stdin("    15.15    ");
+    double result = amount_to_deposit();
+    TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
+}
+
+void test_amount_to_deposit_INVALID_NEGATIVE_NUM(void) {
+    mock_stdin("-15.15");
+    double result = amount_to_deposit();
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+void test_amount_to_deposit_INVALID_STRING(void) {
+    mock_stdin("qwerty");
+    double result = amount_to_deposit();
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+void test_amount_to_deposit_INVALID_STRING_TRAIL(void) {
+    mock_stdin("15.15werty");
+    double result = amount_to_deposit();
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+// =========================
+// ======= 03 withdraw:
+//            amount_to_withdraw()
+//            withdraw_from_user()
+// =========================
+
+// ======= amount_to_withdraw()
+void test_amount_to_withdraw_SUCCESS(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    mock_stdin("15.15");
+    double result = amount_to_withdraw(&test_user);
+    TEST_ASSERT_EQUAL_DOUBLE(-15.15, result);
+}
+
+void test_amount_to_withdraw_FAILURE(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    mock_stdin("0.0");
+    double result = amount_to_withdraw(&test_user);
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}
+
+// ======= withdraw_from_user()
+void test_withdraw_from_user_SUCCESS(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    update_balance_in_csv_ExpectAndReturn(&test_user, -15.15, 0);
+    check_customer_balance_ExpectAndReturn(&test_user, test_user.balance);
+    int result = withdraw_from_user(&test_user, -15.15);
+    TEST_ASSERT_EQUAL_INT(1, result);
+}
+
+void test_withdraw_from_user_FAILURE(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    // amount_to_widthdraw failed and returned 0.0
+    int result = withdraw_from_user(&test_user, 0.0);
+    TEST_ASSERT_EQUAL_INT(0, result);
+}
+
+// =========================
+// ======= 04 transfer:
+//            validate_recipient()
+//            amount_to_transfer()
+// =========================
+
+// ======= validate_recipient()
+
+// ======= amount_to_transfer()
+void test_amount_to_transfer_VALID(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    mock_stdin("15.15");
+    double result = amount_to_transfer(&test_user);
+    TEST_ASSERT_EQUAL_DOUBLE(-15.15, result);
+}
+
+void test_amount_to_transfer_INVALI_INSUFFICIENT_BALANCE(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+
+    double result = amount_to_transfer(&test_user);
+    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
+}

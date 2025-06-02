@@ -1,4 +1,4 @@
-#include "../include/transaction.h"
+//#include "../include/transaction.h"
 #include "../include/transaction_helper.h"
 #include "../include/customer.h"
 #include "../include/account.h"
@@ -22,11 +22,6 @@ int withdraw(User *user) {
     return withdraw_from_user(user, amount);
 }
 
-double amount_to_transfer(User *user) {
-    printf("For transfer first verify the amount you want to withdraw:\n");
-    return validate_transaction(user, "transfer");
-}
-
 void log_transaction(const char *sender_name, const char *recipient_name, const char *recipient_ssn, double amount) {
     FILE *log = fopen("../log.csv", "a");
     if (!log) {
@@ -45,78 +40,6 @@ void log_transaction(const char *sender_name, const char *recipient_name, const 
 
 // char *validate_recipient_name(const char *user) {}
 // char *validate_recipient_ssn(const char *user) {}
-
-int validate_recipient(User *user, double amount) {
-    //To whom?
-    char recipient_name[100];
-    char recipient_ssn[10];
-
-    printf("Please enter the name of the account you want to send money to: ");
-
-    if (fgets(recipient_name, sizeof(recipient_name), stdin) == NULL) {
-        printf("Failed to read input. Please try again.\n");
-        return 0;
-    }
-
-    size_t length = strlen(recipient_name);
-    if (length > 0 && recipient_name[length - 1] == '\n') {
-        recipient_name[length - 1] = '\0';
-    }
-
-    printf("Please enter the SSN of the account you want to send money to: ");
-    scanf("%s", recipient_ssn);
-
-    printf("Please enter account number of receiving account: ");
-    int number_of_account = (get_int_value());
-
-    FILE *input = fopen("../customers.csv", "r");
-    FILE *temp = fopen("temp.csv", "w");
-
-    if (!input || !temp) {
-        perror("Error opening file.");
-        if (input) fclose(input);
-        if (temp) fclose(temp);
-        return 0;
-    }
-
-    char line[256];
-    char name[100], ssn[20];
-    int account;
-    double balance;
-    int account_number;
-
-    int found = 0;
-    while (fgets(line, sizeof(line), input)) {
-        if (!parse_customer_line(line, name, ssn, &account, &balance, &account_number)) {
-            continue;
-        }
-
-        if (strcmp(name, recipient_name) == 0 && strcmp(ssn, recipient_ssn) == 0 && number_of_account == account_number) {
-            balance -= amount;
-            user->balance = balance;
-            found = 1;
-        }
-
-        fprintf(temp, "%s,%s,%d,%.2lf,%d\n", name, ssn, account, balance, account_number);
-    }
-    if (!found) {
-        printf("Account does not exist!\n");
-        return EXIT_FAILURE;
-    }
-    else {
-        printf("Money has been transferred.\n");
-        log_transaction(user->name, recipient_name, recipient_ssn, amount);
-    }
-
-    fclose(input);
-    fclose(temp);
-
-    remove("../customers.csv");
-    rename("temp.csv", "../customers.csv");
-
-    return 1;
-
-}
 
 int transfer(User *users) {
     check_customer_balance(users);

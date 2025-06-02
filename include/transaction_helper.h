@@ -14,4 +14,7 @@ double amount_to_deposit();
 double amount_to_withdraw(User *user);
 int withdraw_from_user(User *user, double amount);
 
+int validate_recipient(User *user, double amount);
+double amount_to_transfer(User *user);
+
 #endif //TRANSACTIONS_HELPER_H
