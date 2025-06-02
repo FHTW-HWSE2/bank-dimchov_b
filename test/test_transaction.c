@@ -1,3 +1,4 @@
+#include "account.h"
 #include "unity.h"
 #include "mock_account.h"
 #include "mock_customer.h"
@@ -11,7 +12,7 @@ void tearDown(void) {}
 // ======= UNIT TEST =======
 // ======= 01 deposit()
 // ======= 02 withdraw()
-
+// ======= 03 transfer()
 
 // =========================
 // ======= 01 deposit()
@@ -20,7 +21,7 @@ void test_deposit_SUCCESS(void) {
   User test_user = {
       .name = "Testily Toastily",
       .SSN = "238598764",
-      .account = 0,
+      .account = STANDARD,
       .balance = 100.00,
       .account_number = 0
   };
@@ -42,7 +43,7 @@ void test_deposit_INVALID(void) {
     User test_user = {
         .name = "Testily Toastily",
         .SSN = "238598764",
-        .account = 0,
+        .account = STANDARD,
         .balance = 100.00
     };
 
@@ -61,7 +62,7 @@ void test_withdraw_SUCCESS(void) {
     User test_user = {
         .name = "Testily Toastily",
         .SSN = "238598764",
-        .account = 0,
+        .account = STANDARD,
         .balance = 100.00
     };
 
@@ -72,5 +73,45 @@ void test_withdraw_SUCCESS(void) {
     withdraw_from_user_ExpectAndReturn(&test_user, 10.10, 1);
 
     int result = withdraw(&test_user);
+    TEST_ASSERT_EQUAL_INT(1, result);
+}
+
+// =========================
+// ======= 03 transfer()
+// =========================
+
+void test_transfer_SUCCESS(void) {
+        User test_user = {
+            .name = "Testily Toastily",
+            .SSN = "238598764",
+            .account = STANDARD,
+            .balance = 100.00
+        };
+
+    check_customer_balance_ExpectAndReturn(&test_user, test_user.balance);
+    amount_to_transfer_ExpectAndReturn(&test_user, -15.15);
+    validate_recipient_ExpectAndReturn(&test_user, -15.15, 1);
+    update_balance_in_csv_ExpectAndReturn(&test_user, -15.15, 1);
+
+    int result = transfer(&test_user);
+
+    TEST_ASSERT_EQUAL_INT(0, result);
+}
+
+void test_transfer_FAIL(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    check_customer_balance_ExpectAndReturn(&test_user, test_user.balance);
+    amount_to_transfer_ExpectAndReturn(&test_user, 15.15);
+    validate_recipient_ExpectAndReturn(&test_user, -15.15, 1);
+    update_balance_in_csv_ExpectAndReturn(&test_user, -15.15, 1);
+
+    int result = transfer(&test_user);
+
     TEST_ASSERT_EQUAL_INT(1, result);
 }
