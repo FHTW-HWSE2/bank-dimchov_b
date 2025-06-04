@@ -15,5 +15,6 @@ double deposit();
 double withdraw(User *user);
 double amount_to_transfer(User *user);
 int transfer(User *user, double amount);
+int transfer_simulation();
 
 #endif 

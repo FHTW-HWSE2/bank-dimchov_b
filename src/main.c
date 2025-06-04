@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 7: 
-                //transfer_simulation();
+                transfer_simulation();
                 break;
 
             case 8: 

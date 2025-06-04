@@ -146,8 +146,8 @@ int transfer(User *user, double amount) {
 }
 
 int transfer_simulation() {
+    
+// Do here hardcode 
+    // return transfer_internal(&user, recipient_name, recipient_ssn, account_number, amount);
 
-// do here some hardcoded test data Muhammed
-
-   // return transfer_internal(&user, recipient_name, recipient_ssn, account_number, amount);
 }
