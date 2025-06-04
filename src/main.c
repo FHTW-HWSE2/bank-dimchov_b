@@ -59,7 +59,6 @@ void csv_header(FILE *file) {
 int main(int argc, char *argv[]) {
     int choice = 0;
     User users;
-    int user_count = 0;
 
     FILE *fp = fopen("../customers.csv", "a+");
     if (fp == NULL) {
@@ -121,7 +120,7 @@ int main(int argc, char *argv[]) {
                 break;
 
             case 7: 
-                simulate_7_days(&users, user_count);
+                //transfer_simulation();
                 break;
 
             case 8: 

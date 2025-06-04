@@ -71,28 +71,7 @@ void log_transaction(const char *sender_name, const char *recipient_name, const 
     fclose(log);
 }
 
-int transfer(User *user, double amount) {
-
-    //To whom?
-    char recipient_name[100];
-    char recipient_ssn[10];
-    printf("Please enter the name of the account you want to send money to: ");
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-
-    fgets(recipient_name, sizeof(recipient_name), stdin);
-
-    size_t length = strlen(recipient_name);
-    if (length > 0 && recipient_name[length - 1] == '\n') {
-        recipient_name[length - 1] = '\0';
-    }
-
-    printf("Please enter the SSN of the account you want to send money to: ");
-    scanf("%s", recipient_ssn);
-
-    printf("Please enter account number of receiving account:\n");
-    int number_of_account = (get_int_value());
-
+int transfer_internal(User *user, const char *recipient_name, const char *recipient_ssn, int number_of_account, double amount) {
     FILE *input = fopen("../customers.csv", "r");
     FILE *temp = fopen("temp.csv", "w");
 
@@ -139,5 +118,36 @@ int transfer(User *user, double amount) {
     rename("temp.csv", "../customers.csv");
 
     return 1;
+}
+    
+int transfer(User *user, double amount) {
 
+    //To whom?
+    char recipient_name[100];
+    char recipient_ssn[10];
+    printf("Please enter the name of the account you want to send money to: ");
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+    fgets(recipient_name, sizeof(recipient_name), stdin);
+
+    size_t length = strlen(recipient_name);
+    if (length > 0 && recipient_name[length - 1] == '\n') {
+        recipient_name[length - 1] = '\0';
+    }
+
+    printf("Please enter the SSN of the account you want to send money to: ");
+    scanf("%s", recipient_ssn);
+
+    printf("Please enter account number of receiving account:\n");
+    int number_of_account = (get_int_value());
+
+    return transfer_internal(user, recipient_name, recipient_ssn, number_of_account, amount);
+}
+
+int transfer_simulation() {
+
+// do here some hardcoded test data Muhammed
+
+   // return transfer_internal(&user, recipient_name, recipient_ssn, account_number, amount);
 }
