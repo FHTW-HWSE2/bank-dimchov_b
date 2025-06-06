@@ -3,11 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../include/customer.h"
-#include "../include/types.h"
-
-#include <main.h>
-
 #include "../include/transaction.h"
+#include "../include/types.h"
+#include <main.h>
 
 // Global variable to store the current simulated date
 time_t simulated_date;
