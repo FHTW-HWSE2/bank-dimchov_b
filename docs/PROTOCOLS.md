@@ -101,3 +101,29 @@ Pending:
     - [ ] Actually simulate 7 days of transactions
     - Refactored transfer()
       - Rename original transfer() to validate_recipient()
+
+# 01/06/25
+- Clariza
+  - Further unit testing
+    - deposit()
+    - transfer()
+      - refactored and moved functions
+        - core logic is in transaction_helper.c
+
+# 06/06/2025
+- Clariza
+  - Online meeting with Mohammed
+    - Discussed the "7 day simulation of transaction and report" requirement
+    - Resolved misunderstandings
+    - Tried helping to understand the transfer_internal() function and what else needed to be done in addition
+      - Agreed upon some details of the requirement
+        - Timestamps for each transaction
+          - Time/Date needs to be simulated
+        - Create 3 users for the sim
+        - Simulate at least 3 transaction per day
+        - Each transaction should be different (different sender, recipient or amount)
+        - All simulated transactions shall be recorded in a separate .csv
+          - transactions are displayed at the end of thee simulation
+          - Report shall be displayed in a table format
+            - Timestamp | Sender | Recipient | Amount
+            
