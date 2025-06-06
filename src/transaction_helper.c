@@ -76,11 +76,6 @@ double validate_amount_to_deposit(const char *input) {
     }
 }
 
-int clear_buffer(){
-    while (getchar() != '\n' &&  getchar() != EOF);
-    return 0;
-}
-
 double amount_to_deposit() {
     char buffer[50];
     clear_buffer();
@@ -117,23 +112,6 @@ double validate_transaction(User *user, const char *action) {
     }
 
     return -amount;
-}
-
-// ===== DEPOSIT
-double amount_to_deposit() {
-    double amount = validate_amount_for_transaction("deposit");
-
-    if(amount < 0) {
-        printf("Invalid amount. Please enter only positive numbers.\n");
-        return 0.0;
-    }
-    else if (amount == 0.0) {
-        printf("Error: $%.2lf money was deposited.\n", amount);
-        return 0.0;
-    } else {
-        printf("Successfully deposited $%.2lf\n", amount);
-        return amount;
-    }
 }
 
 // ===== WITHDRAW
