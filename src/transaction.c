@@ -71,7 +71,18 @@ void log_transaction(const char *sender_name, const char *recipient_name, const 
     fclose(log);
 }
 
-int transfer_internal(User *user, const char *recipient_name, const char *recipient_ssn, int number_of_account, double amount) {
+
+/**
+ * @brief Transfers money from sender to receiver if possible.
+ *
+ * @param sender Pointer to sender User struct
+ * @param recipient_name Receiver's name
+ * @param recipient_ssn Receiver's SSN
+ * @param recipient_account_number Receiver's account number
+ * @param amount Amount to transfer
+ * @return 1 if success, 0 if fail (e.g., account not found or insufficient balance)
+ */
+int transfer_internal(User *sender, const char *recipient_name, const char *recipient_ssn, int recipient_account_number, double amount) {
     FILE *input = fopen("../customers.csv", "r");
     FILE *temp = fopen("temp.csv", "w");
 
@@ -89,37 +100,56 @@ int transfer_internal(User *user, const char *recipient_name, const char *recipi
     int account_number;
 
     int found = 0;
+
+    // Skip and copy header
+    if (fgets(line, sizeof(line), input)) {
+        fprintf(temp, "%s", line);
+    }
+
     while (fgets(line, sizeof(line), input)) {
-        if (!parse_customer_line(line, name, ssn, &account, &balance, &account_number)) {
+        if (sscanf(line, "%99[^,],%19[^,],%d,%lf,%d", name, ssn, &account, &balance, &account_number) != 5) {
             continue;
         }
 
-        if (strcmp(name, recipient_name) == 0 && strcmp(ssn, recipient_ssn) == 0 && number_of_account == account_number) {
-            balance -= amount;
-            user->balance = balance;
+        if (strcmp(name, recipient_name) == 0 && strcmp(ssn, recipient_ssn) == 0 && recipient_account_number == account_number) {
+            // Check if sender has enough balance before transferring
+            if (sender->balance < amount) {
+                printf("Transfer failed: Insufficient balance.\n");
+                fclose(input);
+                fclose(temp);
+                remove("temp.csv"); // Clean up
+                return 0; // Not enough balance
+            }
+
+            // Proceed with transfer
+            sender->balance -= amount;
+            balance += amount;
             found = 1;
         }
 
+        // Write to temp file (updated balance if it's the recipient)
         fprintf(temp, "%s,%s,%d,%.2lf,%d\n", name, ssn, account, balance, account_number);
-    }
-    if (!found) {
-        printf("Account does not exist!\n");
-        return EXIT_FAILURE;
-    }
-    else {
-        printf("Money has been transferred.\n");
-        log_transaction(user->name, recipient_name, recipient_ssn, amount);
     }
 
     fclose(input);
     fclose(temp);
 
-    remove("../customers.csv");
-    rename("temp.csv", "../customers.csv");
+    if (!found) {
+        printf("Account does not exist!\n");
+        remove("temp.csv");
+        return 0;
+    } else {
+        // Replace old customers.csv with updated temp.csv
+        remove("../customers.csv");
+        rename("temp.csv", "../customers.csv");
 
-    return 1;
+        // Log the transaction
+        log_transaction(sender->name, recipient_name, recipient_ssn, amount);
+        printf("transaction completed successfully.\n");
+
+        return 1;
+    }
 }
-    
 int transfer(User *user, double amount) {
 
     //To whom?
@@ -145,9 +175,180 @@ int transfer(User *user, double amount) {
     return transfer_internal(user, recipient_name, recipient_ssn, number_of_account, amount);
 }
 
-int transfer_simulation() {
-    
-// Do here hardcode 
-    // return transfer_internal(&user, recipient_name, recipient_ssn, account_number, amount);
 
+/**
+ * @brief Simulates banking transactions over 7 days and generates a detailed report.
+ *
+ * This function simulates a total of 21 transactions (3 per day for 7 days) between predefined users.
+ * For each transaction:
+ * - Randomly selects a sender and a receiver (ensuring they are different).
+ * - Generates a random transaction amount.
+ * - Checks if the sender has sufficient balance to complete the transaction.
+ * - If the sender has enough balance:
+ *   - Deducts the amount from the sender's balance.
+ *   - Adds the amount to the receiver's balance.
+ *   - Marks the transaction as "Success".
+ * - If not enough balance:
+ *   - Transaction is marked as "Failed" with reason "Insufficient balance".
+ *
+ * For each transaction, the following information is recorded:
+ * - Timestamp of the transaction.
+ * - Sender name.
+ * - Receiver name.
+ * - Transaction amount.
+ * - Status (Success/Failed).
+ * - Reason (if failed).
+ * - Sender's balance before and after the transaction.
+ * - Receiver's balance before and after the transaction.
+ *
+ * After the simulation:
+ * - Prints a table of all transactions to the console.
+ * - Saves the transaction report to a CSV file named `csv_simulation.csv`.
+ *
+ * @note This version uses dummy user data. For real usage, will replace the hardcoded users
+ * and balances with actual system user data.
+ *
+ * @file transfer_simulation.c
+ * @author
+ * @date 2025
+ */
+
+
+void transfer_simulation() {
+    const int DAYS = 7;
+    const int TRANSACTIONS_PER_DAY = 3;
+    const int TOTAL_TRANSACTIONS = DAYS * TRANSACTIONS_PER_DAY;
+
+    TransactionRecord transactions[TOTAL_TRANSACTIONS];
+
+    // Create real User structs (in real case: load from file or initialize properly)
+    User users[3] = {
+        {"Alice Smith", "123456789", STANDARD, 1000.0, 'A', 1111},
+        {"Bob Johnson", "987654321", STANDARD, 1500.0, 'B', 2222},
+        {"John Doe", "555555555", STANDARD, 800.0, 'C', 3333}
+    };
+
+    // 👉 Before anything: write users into customers.csv
+    FILE *file = fopen("../customers.csv", "w");  // "w" to overwrite for clean start
+    if (file != NULL) {
+        // Write header if needed
+        fprintf(file, "Name,SSN,AccountType,Balance,AccountNumber\n");
+        for (int i = 0; i < 3; i++) {
+            fprintf(file, "%s,%s,%d,%.2lf,%d\n",
+                    users[i].name, users[i].SSN, users[i].account, users[i].balance, users[i].account_number);
+        }
+        fclose(file);
+    } else {
+        printf("Could not open customers.csv to write initial users.\n");
+        return;
+    }
+
+    srand(time(NULL));
+    int transaction_count = 0;
+
+    for (int day = 0; day < DAYS; day++) {
+        for (int t = 0; t < TRANSACTIONS_PER_DAY; t++) {
+            int num_users = 3;
+            int sender_index = rand() % num_users;
+            int receiver_index;
+
+            do {
+                receiver_index = rand() % num_users;
+            } while (receiver_index == sender_index);
+
+            double amount = rand() % 500 + 200;  // Random 200-700
+
+            time_t rawtime;
+            struct tm *timeinfo;
+            time(&rawtime);
+            rawtime += day * 86400;
+            timeinfo = localtime(&rawtime);
+
+            char timestamp[20];
+            strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", timeinfo);
+
+            // Save balances BEFORE transaction
+            transactions[transaction_count].sender_balance_before = users[sender_index].balance;
+            transactions[transaction_count].receiver_balance_before = users[receiver_index].balance;
+
+            // Perform the transfer using group function
+            int result = transfer_internal(&users[sender_index], users[receiver_index].name, users[receiver_index].SSN, users[receiver_index].account_number, amount);
+
+            // Save transaction data
+            strcpy(transactions[transaction_count].timestamp, timestamp);
+            strcpy(transactions[transaction_count].sender, users[sender_index].name);
+            strcpy(transactions[transaction_count].receiver, users[receiver_index].name);
+            transactions[transaction_count].amount = amount;
+
+            if (result == 1) {
+                strcpy(transactions[transaction_count].status, "Success");
+                strcpy(transactions[transaction_count].reason, "");
+            } else {
+                strcpy(transactions[transaction_count].status, "Failed");
+                strcpy(transactions[transaction_count].reason, "Insufficient balance");
+            }
+
+            // Save balances AFTER transaction
+            transactions[transaction_count].sender_balance_after = users[sender_index].balance;
+            transactions[transaction_count].receiver_balance_after = users[receiver_index].balance;
+
+            transaction_count++;
+        }
+    }
+
+    // Print the report
+    printf("%-20s %-15s %-15s %-10s %-10s %-25s %-20s %-20s %-20s %-20s\n",
+           "Timestamp", "Sender", "Receiver", "Amount", "Status", "Reason",
+           "Sender Bal Before", "Sender Bal After", "Receiver Bal Before", "Receiver Bal After");
+
+    for (int i = 0; i < TOTAL_TRANSACTIONS; i++) {
+        printf("%-20s %-15s %-15s %-10.2f %-10s %-25s %-20.2f %-20.2f %-20.2f %-20.2f\n",
+               transactions[i].timestamp,
+               transactions[i].sender,
+               transactions[i].receiver,
+               transactions[i].amount,
+               transactions[i].status,
+               transactions[i].reason,
+               transactions[i].sender_balance_before,
+               transactions[i].sender_balance_after,
+               transactions[i].receiver_balance_before,
+               transactions[i].receiver_balance_after);
+    }
+
+    // Write to CSV
+
+    // WARNING: This simulation clears the customers.csv file!
+    // Do NOT use this in production environments.
+    FILE *csv = fopen("csv_simulation.csv", "w");
+    if (csv == NULL) {
+        perror("Failed to open csv_simulation.csv");
+        return;
+    }
+
+    fprintf(csv, "Timestamp,Sender,Receiver,Amount,Status,Reason,SenderBalanceBefore,SenderBalanceAfter,ReceiverBalanceBefore,ReceiverBalanceAfter\n");
+    for (int i = 0; i < TOTAL_TRANSACTIONS; i++) {
+        fprintf(csv, "%s,%s,%s,%.2f,%s,%s,%.2f,%.2f,%.2f,%.2f\n",
+                transactions[i].timestamp,
+                transactions[i].sender,
+                transactions[i].receiver,
+                transactions[i].amount,
+                transactions[i].status,
+                transactions[i].reason,
+                transactions[i].sender_balance_before,
+                transactions[i].sender_balance_after,
+                transactions[i].receiver_balance_before,
+                transactions[i].receiver_balance_after);
+    }
+
+    fclose(csv);
 }
+    /** timestamp for each transaction - with time
+    // print report in the console for the whole processes (transactions)
+    //and show it as a table in the terminal and write it in extra csv (csv_simulation.csv) and it should save it.
+    //the report should have a timestamp and sender name to receiver name and the amount. check whether the transaction was sucessful. check the
+    //whether they have money.
+    //3 transactions per day and each transaction should look different sending direction.
+    //even 3 person is even better!!
+
+    **/
+
