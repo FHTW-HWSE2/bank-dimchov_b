@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 #include "../include/customer.h"
 #include <main.h>
 #include "../include/transaction.h"
@@ -151,7 +150,7 @@ double total_money_in_bank() {
 
     while (fgets(line, sizeof(line), file)) {
         if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance, &account_number)) {
-            
+
             continue;
         }
         total_balance += file_balance;
@@ -177,7 +176,7 @@ void write_last_10_transactions() {
         char ch = fgetc(file);
 
         if (ch == '\n') {
-            line_count++;  
+            line_count++;
         }
     }
 }
@@ -201,9 +200,9 @@ void print_last_10_transaction() {
 }
 
 void report(User *user) {
-    
+
     printf("\n===== CUSTOMER REPORT (^‿^) =====\n");
-    
+
     int total = count_total_accounts();
     printf("Total accounts in system: %d\n", total);
 

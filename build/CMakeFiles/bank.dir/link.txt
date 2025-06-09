@@ -1,0 +1,1 @@
+/usr/bin/cc  -Wall -Wno-unused-parameter -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/bank.dir/src/main.c.o CMakeFiles/bank.dir/src/account.c.o CMakeFiles/bank.dir/src/transaction.c.o CMakeFiles/bank.dir/src/customer.c.o -o bank
