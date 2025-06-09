@@ -58,3 +58,33 @@ Make sure that `cmake` and `make` are installed on your system.
 - The script assumes that `cmake` and `make` are already installed on your system.
 - If you need to modify the build process or make specific configurations, you can edit the `build.sh` script.
 
+
+# ⚠️ Important Note About `transfer_simulation()`
+
+The function `transfer_simulation()` is intended for **simulation purposes** during project testing and development.
+
+## 📚 How it Works
+- **Every time** the simulation runs, it will:
+  - **Clear** (overwrite) the file `customers.csv`.
+  - Insert a fresh set of **hardcoded users**:
+    - Alice Smith
+    - Bob Johnson
+    - John Doe
+- This ensures a **clean test environment** and avoids old or conflicting data from previous runs.
+- Simulated transactions are performed between these predefined users over a period of **7 days**, with **3 random transactions per day**.
+- After the simulation, a detailed report is:
+  - Printed in the terminal.
+  - Saved as `csv_simulation.csv`, including:
+    - Timestamps
+    - Sender/Receiver names
+    - Amounts
+    - Transaction status
+    - Failure reasons
+    - Balances before and after transactions.
+
+## ⚠️ Warning
+> **This simulation will permanently delete and recreate `customers.csv`** every time it runs.  
+> **Do NOT use this behavior in a real production environment.**  
+> In real systems, customer data must be preserved and handled carefully.
+
+
