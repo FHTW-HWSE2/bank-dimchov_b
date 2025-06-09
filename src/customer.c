@@ -1,15 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <time.h>
 #include "../include/customer.h"
+#include <main.h>
 #include "../include/transaction.h"
-
-// Global variable to store the current simulated date
-time_t simulated_date;
-
-Transaction transactions[100];
-int transaction_count = 0;
 
 void save_account_to_csv(User *user, char *filename) {
     FILE *file = fopen(filename, "a");
@@ -19,11 +13,11 @@ void save_account_to_csv(User *user, char *filename) {
         return;
     }
 
-    fprintf(file, "%s,%s,%d,%.2lf\n", user->name, user->SSN, user->account, user->balance);
+    fprintf(file, "%s,%s,%d,%.2lf,%d\n", user->name, user->SSN, user->account, user->balance, user->account_number);
     fclose(file);
 }
 
-int parse_customer_line(char *line, char *name, char *ssn, int *account, double *balance) {
+int parse_customer_line(char *line, char *name, char *ssn, int *account, double *balance, int *account_number) {
     char *token = strtok(line, ",");
     if (!token) return 0;
     strcpy(name, token);
@@ -40,14 +34,19 @@ int parse_customer_line(char *line, char *name, char *ssn, int *account, double 
     if (!token) return 0;
     *balance = atof(token);
 
+    token = strtok(NULL, ",");
+    if (!token) return 0;
+    *account_number = atoi(token);
+
     return 1;
 }
 
-int read_customer_data(User *user, const char *name, const char *ssn) {
+int read_customer_data(User *user, const char *name, const char *ssn, const int *account_number) {
     char line[256];
     char file_name[200], file_ssn[20];
     int file_account;
     double file_balance;
+    int file_account_number;
 
     FILE *file = fopen("../customers.csv", "r");
     if (!file) {
@@ -56,21 +55,20 @@ int read_customer_data(User *user, const char *name, const char *ssn) {
     }
 
     while (fgets(line, sizeof(line), file)) {
-        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance)) {
+        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance, &file_account_number)) {
             continue;
         }
-
-        if (strcmp(file_name, name) == 0 && strcmp(file_ssn, ssn) == 0) {
+        if (strcmp(file_name, name) == 0 && strcmp(file_ssn, ssn) == 0 && file_account_number == *account_number) {
             strcpy(user->name, file_name);
             strcpy(user->SSN, file_ssn);
             user->account = (Account_type)file_account;
             user->balance = file_balance;
+            user->account_number = file_account_number;
 
             fclose(file);
             return 1;
         }
     }
-
     fclose(file);
     return 0;
 }
@@ -85,23 +83,27 @@ int update_balance_in_csv(User *user, double new_amount) {
         if (temp) fclose(temp);
         return 0;
     }
+    csv_header(temp);
 
     char line[256];
     char name[200], ssn[20];
     int account;
     double balance;
+    int account_number;
+
+    fgets(line, sizeof(line), input);
 
     while (fgets(line, sizeof(line), input)) {
-        if (!parse_customer_line(line, name, ssn, &account, &balance)) {
+        if (!parse_customer_line(line, name, ssn, &account, &balance, &account_number)) {
             continue;
         }
 
-        if (strcmp(name, user->name) == 0 && strcmp(ssn, user->SSN) == 0) {
+        if (strcmp(name, user->name) == 0 && strcmp(ssn, user->SSN) == 0 && account_number == user->account_number) {
             balance += new_amount;
             user->balance = balance;
         }
 
-        fprintf(temp, "%s,%s,%d,%.2lf\n", name, ssn, account, balance);
+        fprintf(temp, "%s,%s,%d,%.2lf,%d\n", name, ssn, account, balance, account_number);
     }
 
     fclose(input);
@@ -138,6 +140,7 @@ double total_money_in_bank() {
     int file_account;
     double file_balance;
     double total_balance = 0.0;
+    int account_number;
 
     FILE *file = fopen("../customers.csv", "r");
     if (!file) {
@@ -146,8 +149,8 @@ double total_money_in_bank() {
     }
 
     while (fgets(line, sizeof(line), file)) {
-        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance)) {
-            
+        if (!parse_customer_line(line, file_name, file_ssn, &file_account, &file_balance, &account_number)) {
+
             continue;
         }
         total_balance += file_balance;
@@ -157,106 +160,55 @@ double total_money_in_bank() {
     return total_balance;
 }
 
+void write_last_10_transactions() {
+    FILE *file = fopen("../log.csv", "r");
+    if (!file) {
+        perror("Could not open log file");
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long position = ftell(file);   // Get the current position of the file pointer (this is the size of the file in bytes)
+    int line_count = 0;
+
+    while(position > 0 && line_count <= 10) {
+        fseek(file, --position, SEEK_SET);  // Decrement the position by 1 byte and move the file pointer to the new position
+        char ch = fgetc(file);
+
+        if (ch == '\n') {
+            line_count++;
+        }
+    }
+}
+
+void print_last_10_transaction() {
+    FILE *file = fopen("../log.csv", "r");
+    if (!file) {
+        perror("Could not open file");
+        return;
+    }
+
+    char line[256];
+    int line_count = 0;
+
+    while (fgets(line, sizeof(line), file) && line_count < 10) {
+        printf("%s", line);
+        line_count++;
+    }
+
+    fclose(file);
+}
+
 void report(User *user) {
-    
+
     printf("\n===== CUSTOMER REPORT (^‿^) =====\n");
-    
+
     int total = count_total_accounts();
     printf("Total accounts in system: %d\n", total);
 
     double total_balance = total_money_in_bank();
-    printf("Total money held in bank: %.2lf$\n", total_balance);
-}
+    printf("\nTotal money held in bank: %.2lf$\n", total_balance);
 
-
-/**
- * Simulates the passage of 7 days in the system.
- *
- * This function updates a global simulated date, triggers a set of hardcoded
- * deposit/withdrawal transactions based on account types, and prints a report
- * of all transactions after the simulated time change.
- *
- * @param users       Array of User structures in the system.
- * @param user_count  Total number of users.
- */
-void simulate_7_days(User *users, int user_count) {
-    // Initialize the simulated date to the current time if it hasn't been set yet
-    if (simulated_date == 0) {
-        simulated_date = time(NULL);
-    }
-
-    // Advance the simulated date by exactly 7 days (in seconds)
-    simulated_date += 7 * 24 * 60 * 60;
-
-    printf("Simulated date advanced by 7 days.\n");
-
-    // Execute hardcoded deposits/withdrawals based on account type
-    execute_hardcoded_transactions(users, user_count);
-
-    // Display a report of all transactions
-    generate_transaction_report();
-}
-
-/**
- * Executes predefined deposit or withdrawal transactions for each user.
- *
- * - Standard accounts receive a $100 deposit.
- * - Overdraft accounts are charged a $50 withdrawal.
- *
- * Each transaction is recorded into a global `transactions` array with a timestamp
- * based on the current simulated date.
- *
- * @param users       Array of User structures in the system.
- * @param user_count  Total number of users.
- */
-void execute_hardcoded_transactions(User *users, int user_count) {
-    for (int i = 0; i < user_count; i++) {
-        if (users[i].account == STANDARD) {
-            // Deposit $100 into standard account
-            users[i].balance += 100;
-
-            // Log deposit transaction
-            Transaction t;
-            strftime(t.date, sizeof(t.date), "%Y-%m-%d", localtime(&simulated_date));
-            strcpy(t.type, "Deposit");
-            strcpy(t.account_name, users[i].name);
-            t.amount = 100;
-            transactions[transaction_count++] = t;
-        } else if (users[i].account == OVERDRAFT_LIMIT) {
-            // Withdraw $50 from overdraft account
-            users[i].balance -= 50;
-
-            // Log withdrawal transaction
-            Transaction t;
-            strftime(t.date, sizeof(t.date), "%Y-%m-%d", localtime(&simulated_date));
-            strcpy(t.type, "Withdrawal");
-            strcpy(t.account_name, users[i].name);
-            t.amount = -50;
-            transactions[transaction_count++] = t;
-        }
-    }
-
-    printf("Hardcoded transactions executed.\n");
-}
-
-/**
- * Generates and prints a formatted report of all transactions recorded so far.
- *
- * This function iterates through the global `transactions` array and prints
- * each transaction's date, type, account name, and amount in tabular format.
- */
-void generate_transaction_report() {
-    printf("\n=== Transaction Report ===\n");
-    printf("Date       | Type       | Account Name       | Amount\n");
-    printf("-----------------------------------------------------\n");
-
-    for (int i = 0; i < transaction_count; i++) {
-        printf("%-10s | %-10s | %-18s | $%.2lf\n",
-               transactions[i].date,
-               transactions[i].type,
-               transactions[i].account_name,
-               transactions[i].amount);
-    }
-
-    printf("-----------------------------------------------------\n");
+    printf("\n~~~ Last 10 transactions ~~~\n");
+    print_last_10_transaction();
 }

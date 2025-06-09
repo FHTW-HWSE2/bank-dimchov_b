@@ -11,12 +11,25 @@ typedef struct {
     double amount;
 } Transaction;
 
+
+typedef struct {
+    char timestamp[20];
+    char sender[100];
+    char receiver[100];
+    double amount;
+    char status[10]; // "Success" or "Failed"
+    char reason[50]; // Reason for failure or empty if success
+    double sender_balance_before;
+    double sender_balance_after;
+    double receiver_balance_before;
+    double receiver_balance_after;
+} TransactionRecord;
+
 double deposit();
 double withdraw(User *user);
 double amount_to_transfer(User *user);
 int transfer(User *user, double amount);
-void simulate_7_days(User *users, int user_count); //MS
-void log_transaction(const Transaction *tx); //MS
-void print_last_10_transactions(); //MS
+
+void transfer_simulation();
 
 #endif 
