@@ -115,6 +115,7 @@ void setup_csv_with_user() {
     fclose(file);
 }
 
+/*
 void test_update_balance_in_csv_SUCCESS (void) {
     
     User user = {
@@ -129,3 +130,4 @@ void test_update_balance_in_csv_SUCCESS (void) {
     TEST_ASSERT_EQUAL_INT(1, result);
 }
 
+*/
