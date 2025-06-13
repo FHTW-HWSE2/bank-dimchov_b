@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unity.h>
 #include <types.h>
+#include <stdio.h>
 #include "customer.h"
 #include "mock_main.h"
 // #include "main.h"
@@ -21,6 +22,14 @@ void teardown(void) {
 // ======= 05 report()
 // ======= 06 execute_hardcoded_transactions()
 // ======= 07 generate_transactions_report()
+
+void mock_stdin(const char *input) {
+    FILE *file = fopen("test/mock_input.txt", "w");
+    fprintf(file, "%s\n", input);
+    fclose(file);
+
+    freopen("test/mock_input.txt", "r", stdin);
+}
 
 // =========================
 // ======= 00 mock dependecies
@@ -135,6 +144,63 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
     TEST_ASSERT_EQUAL_INT(0, result);
 }
 */
+
+// =========================
+// ======= 01 read_customer_data()
+// =========================
+
+void test_read_customer_data_SUCCESS(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00,
+        .account_number = 1
+    };
+    char *mock_name = test_user.name;
+    char *mock_ssn = test_user.SSN;
+    int mock_account_type = test_user.account;
+    double mock_balance = test_user.balance;
+    int mock_account_number = test_user.account_number;
+
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Testily Toastily,238598764,0,100.0,1");
+    fclose(file);
+
+    char mock_csv_line[256] = "Testily Toastily,238598764,0,100.0,1";
+    parse_customer_line(mock_csv_line,mock_name, mock_ssn, &mock_account_type, &mock_balance, &mock_account_number);
+//    parse_customer_line_ExpectAndReturn(mock_csv_line, mock_name, mock_ssn, &mock_account_type, &mock_balance, &mock_account_number,0);
+
+    int result = read_customer_data(&test_user, mock_name, mock_ssn, &mock_account_number);
+    TEST_ASSERT_EQUAL_INT(1, result);
+}
+
+void test_read_customer_data_WRONG_NAME(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00,
+        .account_number = 1
+    };
+    char *mock_name = "Tittily Toastily";
+    char *mock_ssn = test_user.SSN;
+    int mock_account_type = test_user.account;
+    double mock_balance = test_user.balance;
+    int mock_account_number = test_user.account_number;
+
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Testily Toastily,238598764,0,100.0,1");
+    fclose(file);
+
+    char mock_csv_line[256] = "Testily Toastily,238598764,0,100.0,1";
+
+    int result = read_customer_data(&test_user, mock_name, mock_ssn, &mock_account_number);
+    TEST_ASSERT_EQUAL_INT(0, result);
+}
+
+
+
 
 void setup_csv_with_user() {
     FILE *file = fopen("../customers.csv", "w");
