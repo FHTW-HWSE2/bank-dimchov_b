@@ -4,7 +4,10 @@
 #include "mock_main.h"
 
 void setUp(void) {}
-void tearDown(void) {}
+void tearDown(void) {
+    remove("customers.csv");
+    remove("temp.csv");
+}
 
 // ======= UNIT TEST =======
 // ======= 01 save_account_to_csv()
@@ -105,3 +108,24 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
     int result = parse_customer_line(mock_extra_comma_middle_in_csv_line,mock_name, mock_ssn, &mock_account_type, &mock_balance, &mock_account_number);
     TEST_ASSERT_EQUAL_INT(0, result);
 }
+
+void setup_csv_with_user() {
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Max Mustermann,123456789,1,100.00,1\n");
+    fclose(file);
+}
+
+void test_update_balance_in_csv_SUCCESS (void) {
+    
+    User user = {
+        .name = "Max Mustermann",
+        .SSN = "123456789",
+        .account = 1,
+        .balance = 100.0,
+        .account_number = 1
+    };
+    setup_csv_with_user();
+    int result = update_balance_in_csv(&user, 70.00);
+    TEST_ASSERT_EQUAL_INT(1, result);
+}
+
