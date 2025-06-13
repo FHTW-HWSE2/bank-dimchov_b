@@ -73,7 +73,6 @@ void test_parse_customer_line_SUCCESS(void) {
     TEST_ASSERT_EQUAL_INT(1, result);
 }
 
-
 void test_parse_customer_line_INCOMPLETE_CSV_LINE(void) {
     User test_user = {
         .name = "Testily Toastily",
