@@ -137,6 +137,12 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
 }
 */
 
+void setup_csv_with_user() {
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Max Mustermann,123456789,1,100.00,1\n");
+    fclose(file);
+}
+
 void test_count_total_accounts_SUCCESS(void) {
     mock_customers_csv();
     TEST_ASSERT_EQUAL_INT(6, count_total_accounts());
