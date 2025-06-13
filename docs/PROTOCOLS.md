@@ -126,4 +126,10 @@ Pending:
           - transactions are displayed at the end of thee simulation
           - Report shall be displayed in a table format
             - Timestamp | Sender | Recipient | Amount
-            
+
+# 07/06/2025
+- Clariza
+  - !! Add code to parse_customer_line() in customer.c
+    - Reason: Unit test failure when there are more commas/columns than expected. 
+    - Check correct amount of columns 
+    - Error catch for empty fields or unwanted-/intended columns
