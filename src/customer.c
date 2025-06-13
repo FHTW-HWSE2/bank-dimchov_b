@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "../include/customer.h"
-#include <main.h>
-#include "../include/transaction.h"
+#include "../include/main.h"
 
 void save_account_to_csv(User *user, char *filename) {
     FILE *file = fopen(filename, "a");

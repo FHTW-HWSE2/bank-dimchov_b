@@ -1,5 +1,5 @@
 #include "../include/transaction.h"
-#include "account.h"
+#include "../include/account.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -146,8 +146,36 @@ int transfer(User *user, double amount) {
 }
 
 int transfer_simulation() {
-    
-// Do here hardcode 
-    // return transfer_internal(&user, recipient_name, recipient_ssn, account_number, amount);
+    User user = {
+        .name = "Bubble Bee",
+        .balance = 5000.0
+    };
+
+    const char *recipient_name = "Chicken Nugget";
+    const char *recipient_ssn = "123456789";
+    int account_number = 1;
+    double amount = 250.0;
+
+    printf("%s transferred $%.2f to %s\n", user.name, amount, recipient_name);
+    double daily_amounts[7] = {250.0, 300.0, 150.0, 400.0, 500.0, 100.0, 200.0};
+
+    printf("Starting 7 day transfer simulation:\n");
+    for (int day = 1; day <= 7; day++) {
+        double amount = daily_amounts[day - 1];
+
+        printf("\nDay %d: %s transfers $%.2f to %s\n",
+               day, user.name, amount, recipient_name);
+
+        int result = transfer_internal(&user, recipient_name, recipient_ssn, account_number, amount);
+
+        if (!result) {
+            printf("Transfer failed on day %d\n", day);
+            return 0; 
+        }
+        printf("Balance from %s after day %d transfer: $%.2f\n", user.name, day, user.balance);
+    }
+    printf("\n7-day simulation completed. Final balance: $%.2f\n", user.balance);
+
+    return 1;
 
 }
