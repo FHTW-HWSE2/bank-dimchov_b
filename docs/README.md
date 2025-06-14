@@ -63,7 +63,7 @@ Make sure that `cmake` and `make` are installed on your system.
 
 The function `transfer_simulation()` is intended for **simulation purposes** during project testing and development.
 
-## 📚 How it Works
+##  How it Works
 - **Every time** the simulation runs, it will:
   - **Clear** (overwrite) the file `customers.csv`.
   - Insert a fresh set of **hardcoded users**:
