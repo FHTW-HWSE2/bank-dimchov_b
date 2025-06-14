@@ -184,7 +184,7 @@ void write_last_10_transactions() {
 void print_last_10_transaction() {
     FILE *file = fopen("../log.csv", "r");
     if (!file) {
-        perror("Could not open file");
+        printf("No transactions yet.\n");
         return;
     }
 
@@ -198,7 +198,6 @@ void print_last_10_transaction() {
 
     fclose(file);
 }
-
 void report(User *user) {
 
     printf("\n===== CUSTOMER REPORT (^‿^) =====\n");

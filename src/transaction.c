@@ -13,10 +13,8 @@ double deposit() {
         printf("Invalid amount\n");
         return 0.0;
     }
-    else {
-        printf("Successfully deposited $%.2lf\n", amount);
-        return amount;
-    }
+    printf("Successfully deposited $%.2lf\n", amount);
+    return amount;
 }
 
 double validate_transaction(User *user, const char *action) {
