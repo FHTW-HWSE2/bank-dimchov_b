@@ -2,8 +2,8 @@
 #include <types.h>
 #include "customer.h"
 #include "mock_main.h"
+#include "mock_transaction.h"
 #include "account.h"
-#include "transaction_helper.h"
 
 void setUp(void) {}
 void tearDown(void) {}

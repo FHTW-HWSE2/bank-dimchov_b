@@ -1,6 +1,8 @@
 #ifndef ACCOUNT_HELPER_H
 #define ACCOUNT_HELPER_H
 
+#include "types.h"
+
 int get_int_value(void);
 int login(User *user);
 int chooseAccountType(User *user);

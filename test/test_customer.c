@@ -1,15 +1,21 @@
 #include <stdio.h>
 #include <unity.h>
 #include <types.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include "customer.h"
 #include "mock_main.h"
 // #include "main.h"
+#include "mock_transaction.h"
+//#include "mock_customer.h"
 
 void setUp(void) {}
 void teardown(void) {
     remove("test/mock_input.txt");
     remove("../customers.csv");
+    remove("customers.csv");
+    remove("temp.csv");
     freopen("CON", "r", stdin);
     // freopen("/dev/tty", "r", stdin); // Linux, Mac
 }
@@ -19,9 +25,9 @@ void teardown(void) {
 // ======= 02 parse_customer_line()
 // ======= 03 read_customer_data()
 // ======= 04 update_balance_in_csv()
-// ======= 05 report()
-// ======= 06 execute_hardcoded_transactions()
-// ======= 07 generate_transactions_report()
+// ======= 05 count_total_accounts()
+// ======= 06 report()
+// ======= 07 total_money_in_bank()
 
 void mock_stdin(const char *input) {
     FILE *file = fopen("test/mock_input.txt", "w");
@@ -33,6 +39,7 @@ void mock_stdin(const char *input) {
 
 // =========================
 // ======= 00 mock dependecies
+// =========================
 void mock_stdin(const char *input) {
     FILE *file = fopen("test/mock_input.txt", "w");
     fprintf(file, "%s\n", input);
@@ -50,6 +57,7 @@ void mock_customers_csv() {
     fprintf(file, "User Five,57654321,1,1100.0,1\n");
     fprintf(file, "User Six,47654321,0,2030.0,1\n");
     fclose(file);
+    // sum balance 4430.00
 }
 
 // =========================
@@ -123,7 +131,6 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_AT_THE_END (void) {
     TEST_ASSERT_EQUAL_INT(0, result);
 }
 
-/*
 void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
     User test_user = {
         .name = "Testily Toastily",
@@ -143,10 +150,9 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
     int result = parse_customer_line(mock_extra_comma_middle_in_csv_line,mock_name, mock_ssn, &mock_account_type, &mock_balance, &mock_account_number);
     TEST_ASSERT_EQUAL_INT(0, result);
 }
-*/
 
 // =========================
-// ======= 01 read_customer_data()
+// ======= 03 read_customer_data()
 // =========================
 
 void test_read_customer_data_SUCCESS(void) {
@@ -200,7 +206,9 @@ void test_read_customer_data_WRONG_NAME(void) {
 }
 
 
-
+// =========================
+// ======= 04 update_balance_in_csv()
+// =========================
 
 void setup_csv_with_user() {
     FILE *file = fopen("../customers.csv", "w");
@@ -226,4 +234,92 @@ void test_update_balance_in_csv_SUCCESS(void) {
     csv_header_Expect(temp);
     int result = update_balance_in_csv(&test_user, 15.15);
     TEST_ASSERT_EQUAL_INT(1, result);
+}
+
+// =========================
+// ======= 05 count_total_accounts()
+// =========================
+
+void test_count_total_accounts_SUCCESS(void) {
+    mock_customers_csv();
+    TEST_ASSERT_EQUAL_INT(6, count_total_accounts());
+}
+
+
+
+// =========================
+// ======= 06 report()
+// =========================
+
+void test_report_CORRECT_OUTPUT_SUCCESS(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = OVERDRAFT_LIMIT,
+        .balance = 100.00
+    };
+
+    char buffer[1024] = {0};
+
+    // Redirect stdout
+    fflush(stdout);
+    int original_stdout_fd = dup(fileno(stdout));
+    FILE *temp_stdout = tmpfile();
+    dup2(fileno(temp_stdout), fileno(stdout));
+
+    report(&test_user);
+
+    fflush(stdout);
+    fseek(temp_stdout, 0, SEEK_SET);
+    fread(buffer, 1, sizeof(buffer) - 1, temp_stdout);
+
+    // Restore stdout
+    dup2(original_stdout_fd, fileno(stdout));
+    close(original_stdout_fd);
+    fclose(temp_stdout);
+
+    TEST_ASSERT_NOT_NULL(strstr(buffer, "===== CUSTOMER REPORT (^‿^) ====="));
+    TEST_ASSERT_NOT_NULL(strstr(buffer, "Total accounts in system: 6"));
+    TEST_ASSERT_NOT_NULL(strstr(buffer, "Total money held in bank: 4430.00$"));
+    TEST_ASSERT_NOT_NULL(strstr(buffer, "~~~ Last 10 transactions ~~~"));
+}
+
+// =========================
+// ======= 07 total_money_in_bank()
+// =========================
+void test_total_money_in_bank_SUCCESS(void) {
+    FILE *file = fopen("../customers.csv", "w");
+    //fprintf(file, "Name,SSN,Account,Balance,AccountNumber\n");
+    fprintf(file, "Testily Toastily,238598764,0,100.0,1\n");
+    fprintf(file, "User Two,87654321,1,200.0,1\n");
+    fprintf(file, "User Three,77654221,0,800.0,1\n");
+    fprintf(file, "User Four,67654321,1,200.0,1\n");
+    fprintf(file, "User Five,57654321,1,1100.0,1\n");
+    fprintf(file, "User Six,47654321,0,2030.0,1\n");
+    fclose(file);
+    // sum balance 4430.00
+
+    double result = total_money_in_bank();
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, 4430.00, result);
+}
+
+void test_total_money_in_bank_EMPTY_FILE(void) {
+    FILE *file = fopen("../customers.csv", "w");
+    fclose(file);
+
+    double result = total_money_in_bank();
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, 00.00, result);
+}
+
+void test_total_money_in_bank_INVALID_LINES(void) {
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Testily Toastily,238598764,0,100.0,1\n");
+    fprintf(file, "First invalid line\n");
+    fprintf(file, "User Two,87654321,1,200.0,1\n");
+    fprintf(file, "Second invalid line\n");
+    fprintf(file, "User Three,77654221,0,300.0,1\n");
+    fclose(file);
+
+    double result = total_money_in_bank();
+    TEST_ASSERT_DOUBLE_WITHIN(0.01, 600.00, result);
 }

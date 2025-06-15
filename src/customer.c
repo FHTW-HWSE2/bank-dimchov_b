@@ -212,3 +212,37 @@ void report(User *user) {
     printf("\n~~~ Last 10 transactions ~~~\n");
     print_last_10_transaction();
 }
+
+/*
+void simulate_7_days(User *users, int user_count) {
+    printf("Simulated date advanced by 7 days.\n");
+    printf("Simulated transactions loaded from file.\n");
+
+    FILE *file = fopen("../simulated_transactions.csv", "r");
+    if (!file) {
+        perror("Could not open simulated_transactions.csv");
+        return;
+    }
+
+    char line[256];
+    int line_num = 0;
+
+    printf("\n=== Simulated Transaction Report ===\n");
+    printf("Date       | Type       | Account Name       | Amount\n");
+    printf("-----------------------------------------------------\n");
+
+    while (fgets(line, sizeof(line), file)) {
+        if (line_num++ == 0) continue; // Skip header line
+
+        char date[20], type[20], name[100];
+        double amount;
+
+        if (sscanf(line, "%19[^,],%19[^,],%99[^,],%lf", date, type, name, &amount) == 4) {
+            printf("%-10s | %-10s | %-18s | $%.2lf\n", date, type, name, amount);
+        }
+    }
+
+    printf("-----------------------------------------------------\n");
+    fclose(file);
+}
+*/

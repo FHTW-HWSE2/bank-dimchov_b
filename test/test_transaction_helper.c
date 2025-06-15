@@ -9,6 +9,7 @@
 void setup(void) {}
 void teardown(void) {
     remove("test/mock_input.txt");
+    remove("../customers.csv");
     freopen("CON", "r", stdin);
     // freopen("/dev/tty", "r", stdin); // Linux, Mac
 }
@@ -28,6 +29,17 @@ void mock_stdin(const char *input) {
     fclose(file);
 
     freopen("test/mock_input.txt", "r", stdin);
+}
+
+void mock_customers_csv() {
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Testily Toastily,238598764,0,100.0,1\n");
+    fprintf(file, "User Two,87654321,1,200.0,1\n");
+    fprintf(file, "User Three,77654221,0,800.0,1\n");
+    fprintf(file, "User Four,67654321,1,200.0,1\n");
+    fprintf(file, "User Five,57654321,1,1100.0,1\n");
+    fprintf(file, "User Six,47654321,0,2030.0,1\n");
+    fclose(file);
 }
 
 // =========================
@@ -302,6 +314,36 @@ void test_withdraw_from_user_FAILURE(void) {
 // =========================
 
 // ======= validate_recipient()
+void test_validate_recipient_SUCCESS() {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+
+    double transfered_amount = 20.00;
+
+    mock_stdin("User Two\n87654321\n");
+    get_int_value_ExpectAndReturn(1);
+
+    mock_customers_csv();
+
+    char line[256] = "User Two,87654321,1,200.0,1\n";
+    char *recipient_name = "User Two";
+    char *recipient_ssn = "87654321";
+    int recipient_account = 1;
+    double recipient_balance = 200.00;
+    int recipient_account_number = 1;
+    // "User Two,87654321,1,200.0,1\n");
+    //parse_customer_line(char *line, char *name, char *ssn, int *account, double *balance, int *account_number)
+    parse_customer_line_ExpectAndReturn(line, recipient_name, recipient_ssn, &recipient_account, &recipient_balance, &recipient_account_number,1);
+
+    log_transaction_Expect("Testily Toastily", "User Two", "87654321", transfered_amount);
+
+    int result = validate_recipient(&test_user, transfered_amount);
+    TEST_ASSERT_EQUAL_INT(1, result);
+}
 
 // ======= amount_to_transfer()
 void test_amount_to_transfer_VALID(void) {
