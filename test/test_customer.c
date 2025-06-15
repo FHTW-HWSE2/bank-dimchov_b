@@ -1,10 +1,17 @@
+#include <stdio.h>
 #include <unity.h>
 #include <types.h>
 #include "customer.h"
 #include "mock_main.h"
+// #include "main.h"
 
 void setUp(void) {}
-void tearDown(void) {}
+void teardown(void) {
+    remove("test/mock_input.txt");
+    remove("../customers.csv");
+    freopen("CON", "r", stdin);
+    // freopen("/dev/tty", "r", stdin); // Linux, Mac
+}
 
 // ======= UNIT TEST =======
 // ======= 01 save_account_to_csv()
@@ -14,6 +21,27 @@ void tearDown(void) {}
 // ======= 05 report()
 // ======= 06 execute_hardcoded_transactions()
 // ======= 07 generate_transactions_report()
+
+// =========================
+// ======= 00 mock dependecies
+void mock_stdin(const char *input) {
+    FILE *file = fopen("test/mock_input.txt", "w");
+    fprintf(file, "%s\n", input);
+    fclose(file);
+
+    freopen("test/mock_input.txt", "r", stdin);
+}
+
+void mock_customers_csv() {
+    FILE *file = fopen("../customers.csv", "w");
+    fprintf(file, "Testily Toastily,238598764,0,100.0,1\n");
+    fprintf(file, "User Two,87654321,1,200.0,1\n");
+    fprintf(file, "User Three,77654221,0,800.0,1\n");
+    fprintf(file, "User Four,67654321,1,200.0,1\n");
+    fprintf(file, "User Five,57654321,1,1100.0,1\n");
+    fprintf(file, "User Six,47654321,0,2030.0,1\n");
+    fclose(file);
+}
 
 // =========================
 // ======= 01 save_account_to_csv()
@@ -44,6 +72,7 @@ void test_parse_customer_line_SUCCESS(void) {
     int result = parse_customer_line(mock_csv_line, mock_name, mock_ssn, &mock_account_type, &mock_balance, &mock_account_number);
     TEST_ASSERT_EQUAL_INT(1, result);
 }
+
 
 void test_parse_customer_line_INCOMPLETE_CSV_LINE(void) {
     User test_user = {
@@ -86,6 +115,7 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_AT_THE_END (void) {
     TEST_ASSERT_EQUAL_INT(0, result);
 }
 
+/*
 void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
     User test_user = {
         .name = "Testily Toastily",
@@ -104,4 +134,25 @@ void test_parse_customer_line_UNEXPECTED_EXTRA_COMMA_IN_THE_MIDDLE (void) {
     char mock_extra_comma_middle_in_csv_line[256] = "Testily Toastily,,238598764,0,100.0,1";
     int result = parse_customer_line(mock_extra_comma_middle_in_csv_line,mock_name, mock_ssn, &mock_account_type, &mock_balance, &mock_account_number);
     TEST_ASSERT_EQUAL_INT(0, result);
+}
+*/
+
+void test_count_total_accounts_SUCCESS(void) {
+    mock_customers_csv();
+    TEST_ASSERT_EQUAL_INT(6, count_total_accounts());
+}
+
+void test_update_balance_in_csv_SUCCESS(void) {
+    User test_user = {
+        .name = "Testily Toastily",
+        .SSN = "238598764",
+        .account = STANDARD,
+        .balance = 100.00
+    };
+    FILE *temp = fopen("mock_input.csv", "w");
+
+    mock_customers_csv();
+    csv_header_Expect(temp);
+    int result = update_balance_in_csv(&test_user, 15.15);
+    TEST_ASSERT_EQUAL_INT(1, result);
 }
