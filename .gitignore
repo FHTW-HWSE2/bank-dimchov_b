@@ -4,6 +4,8 @@
 /cmake-build-debug-mingw
 /log.csv
 /test/build/artifacts
+/test/build/vendor/cmock/src
+/test/build/vendor/unity/src
 /test/build/logs
 /test/build/test
 /test/build/gcov
