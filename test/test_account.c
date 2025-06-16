@@ -202,7 +202,6 @@ void test_get_int_value_SUCCESS() {
     int result = get_int_value();
     TEST_ASSERT_EQUAL_INT(1, result);
 }
-*/
 
 
 // =========================

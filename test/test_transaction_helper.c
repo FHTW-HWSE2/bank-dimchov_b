@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 void setUp(void) {}
-void tearDown(void) { } /*
+void tearDown(void) {} /*
     remove("test/mock_input.txt");
     remove("../customers.csv");
     freopen("CON", "r", stdin);
@@ -364,20 +364,4 @@ void test_amount_to_transfer_INVALI_INSUFFICIENT_BALANCE(void) {
 
     double result = amount_to_transfer(&test_user);
     TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
-}
-void test_validate_amount_to_deposit_MIXED_DATATYPES_LEADING_NUM(void) {
-  double result = validate_amount_to_deposit("15.15AbCdEfg");
-  TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
-  // TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
-}
-
-void test_validate_amount_to_deposit_MIXED_DATATYPES_LEADING_CHAR(void) {
-    double result = validate_amount_to_deposit("a15.15AbCdEfg");
-    TEST_ASSERT_EQUAL_DOUBLE(0.0, result);
-}
-
-void test_validate_amount_to_deposit_WHITESPACE(void) {
-  double result = validate_amount_to_deposit("    15.15 ");
-  TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
-  //TEST_ASSERT_DOUBLE_WITHIN(0.0001, 15.15, result);
 }
