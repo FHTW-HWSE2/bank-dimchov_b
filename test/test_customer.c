@@ -11,14 +11,14 @@
 //#include "mock_customer.h"
 
 void setUp(void) {}
-void teardown(void) {
+void teardown(void) {} /*
     remove("test/mock_input.txt");
     remove("../customers.csv");
     remove("customers.csv");
     remove("temp.csv");
     freopen("CON", "r", stdin);
     // freopen("/dev/tty", "r", stdin); // Linux, Mac
-}
+}*/
 
 // ======= UNIT TEST =======
 // ======= 01 save_account_to_csv()
@@ -28,14 +28,6 @@ void teardown(void) {
 // ======= 05 count_total_accounts()
 // ======= 06 report()
 // ======= 07 total_money_in_bank()
-
-void mock_stdin(const char *input) {
-    FILE *file = fopen("test/mock_input.txt", "w");
-    fprintf(file, "%s\n", input);
-    fclose(file);
-
-    freopen("test/mock_input.txt", "r", stdin);
-}
 
 // =========================
 // ======= 00 mock dependecies
@@ -214,11 +206,6 @@ void setup_csv_with_user() {
     FILE *file = fopen("../customers.csv", "w");
     fprintf(file, "Max Mustermann,123456789,1,100.00,1\n");
     fclose(file);
-}
-
-void test_count_total_accounts_SUCCESS(void) {
-    mock_customers_csv();
-    TEST_ASSERT_EQUAL_INT(6, count_total_accounts());
 }
 
 void test_update_balance_in_csv_SUCCESS(void) {

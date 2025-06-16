@@ -301,7 +301,7 @@ void test_delete_account_FAILED_TO_OPEN_FILE(void) {
 // ======= check_number_of_accounts(const char *name, const char *ssn)
 // =========================
 
-void test_check_number_of_accounts_SUCCESS(void) {
+void test_check_number_of_accounts_SUCCESS(void){
     FILE *file = fopen("../customers.csv", "w");
     fprintf(file, "Testily Toastily,238598764,0,100.0,1");
     fprintf(file, "Testily Toastily,238598764,0,100.0,2");

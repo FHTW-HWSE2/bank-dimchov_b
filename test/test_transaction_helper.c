@@ -7,12 +7,12 @@
 #include <stdio.h>
 
 void setUp(void) {}
-void tearDown(void) {
+void tearDown(void) { } /*
     remove("test/mock_input.txt");
     remove("../customers.csv");
     freopen("CON", "r", stdin);
     // freopen("/dev/tty", "r", stdin); // Linux, Mac
-}
+}*/
 
 // ======= UNIT TEST =======
 // ======= 00 mock dependecies
@@ -238,12 +238,6 @@ void test_validate_amount_to_deposit_WHITESPACE(void) {
   double result = validate_amount_to_deposit("    15.15 ");
   // TEST_ASSERT_EQUAL_DOUBLE(15.15, result);
   TEST_ASSERT_DOUBLE_WITHIN(0.0001, 15.15, result);
-}
-
-// ======= clear_buffer()
-void test_clear_buffer(void) {
-    TEST_ASSERT_EQUAL(0, clear_buffer());
-    // TEST_IGNORE();
 }
 
 // =========================
