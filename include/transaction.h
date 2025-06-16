@@ -15,4 +15,4 @@ int transfer(User *user);
 // void simulate_7_days(User *users, int user_count);
 int transfer_simulation();
 
-#endif 
+#endif
