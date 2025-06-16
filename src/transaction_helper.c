@@ -87,7 +87,6 @@ double amount_to_deposit() {
     return validate_amount_to_deposit(buffer);
 }
 
-// ===== WITHDRAW
 double validate_transaction(User *user, const char *action) {
     // double amount = 0.0;
     // clear_buffer();
