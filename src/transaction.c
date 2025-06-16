@@ -72,8 +72,7 @@ int transfer_internal(User *user, const char *recipient_name, const char *recipi
     if (!found) {
         printf("Account does not exist!\n");
         return EXIT_FAILURE;
-    }
-    else {
+    } else {
         printf("Money has been transferred.\n");
         log_transaction(user->name, recipient_name, recipient_ssn, amount);
     }
@@ -84,19 +83,28 @@ int transfer_internal(User *user, const char *recipient_name, const char *recipi
     remove("../customers.csv");
     rename("temp.csv", "../customers.csv");
 
+    update_balance_in_csv(user, amount);
+
     return 1;
 }
 
-int transfer(User *user, double amount) {
+int transfer(User *user) {
+    check_customer_balance(user);
+    double amount = amount_to_transfer(user);
 
     //To whom?
     char recipient_name[100];
     char recipient_ssn[10];
     printf("Please enter the name of the account you want to send money to: ");
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    /*int c;
+    while ((c = getchar()) != '\n' && c != EOF);*/
 
-    fgets(recipient_name, sizeof(recipient_name), stdin);
+
+    // fgets(recipient_name, sizeof(recipient_name), stdin);
+    if (fgets(recipient_name, sizeof(recipient_name), stdin) == NULL) {
+        printf("Failed to read input. Please try again.\n");
+        return 0;
+    }
 
     size_t length = strlen(recipient_name);
     if (length > 0 && recipient_name[length - 1] == '\n') {
