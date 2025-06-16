@@ -6,8 +6,8 @@
 #include "transaction_helper.h"
 #include <stdio.h>
 
-void setup(void) {}
-void teardown(void) {
+void setUp(void) {}
+void tearDown(void) {
     remove("test/mock_input.txt");
     remove("../customers.csv");
     freopen("CON", "r", stdin);
