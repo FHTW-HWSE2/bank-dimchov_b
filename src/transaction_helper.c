@@ -79,11 +79,6 @@ double validate_amount_to_deposit(const char *input) {
     }
 }
 
-int clear_buffer(){
-    while (getchar() != '\n' &&  getchar() != EOF);
-    return 0;
-}
-
 double amount_to_deposit() {
     char buffer[50];
     clear_buffer();
